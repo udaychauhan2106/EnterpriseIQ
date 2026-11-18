@@ -200,6 +200,7 @@ def process_file(file_path: str, filename: str, source_type: str) -> None:
                 "source": filename,
                 "source_type": source_type,
                 "chunk_index": chunk_index,
+                "organization_id": "local",
             },
         )
         for chunk_index, (chunk, vector) in enumerate(zip(chunks, embeddings))

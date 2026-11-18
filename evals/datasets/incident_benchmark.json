@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "synthetic": true,
+  "description": "Small labelled synthetic incident set for local retrieval and workflow evaluation; it contains no production incident data.",
+  "corpus": [
+    {
+      "document_id": "runbook-500-errors",
+      "source": "payment-api-runbook.md",
+      "text": "For intermittent HTTP 500 responses, compare request IDs with application logs, check upstream timeout rates, and review deployment changes in the affected service window. A 500 response alone does not establish a root cause."
+    },
+    {
+      "document_id": "deployment-release-42",
+      "source": "deployment-history.json",
+      "text": "Synthetic deployment record: payment-api release 42 completed at 2026-10-12T13:00:00Z. The record reports a successful rollout and contains no rollback event."
+    },
+    {
+      "document_id": "gateway-timeout-logs",
+      "source": "gateway-logs.log",
+      "text": "Synthetic log excerpt: payment-api request IDs p-771 and p-772 returned HTTP 500 at 2026-10-12T13:14:03Z and 13:15:21Z. Both entries include upstream_timeout=true."
+    },
+    {
+      "document_id": "vendor-latency-incident",
+      "source": "vendor-status.json",
+      "text": "Synthetic provider status record: the upstream payment processor reported elevated latency from 13:10Z to 13:18Z on 2026-10-12. This record does not prove that the provider caused a specific customer request failure."
+    },
+    {
+      "document_id": "historical-cache-incident",
+      "source": "incident-2025-044.md",
+      "text": "Synthetic historical incident 2025-044: a payment-api cache saturation issue caused elevated 500 responses in 2025. The issue was resolved by reducing cache pressure; this historical event is not evidence about incidents in 2026."
+    },
+    {
+      "document_id": "rollout-status-conflict-a",
+      "source": "change-calendar.csv",
+      "text": "Synthetic change-calendar record: order-service release 18 was marked completed at 09:00Z on 2026-10-12."
+    },
+    {
+      "document_id": "rollout-status-conflict-b",
+      "source": "deployment-console.log",
+      "text": "Synthetic console record: order-service release 18 was marked failed at 09:00Z on 2026-10-12. The two records disagree; the deployment state requires verification."
+    },
+    {
+      "document_id": "monitoring-maintenance",
+      "source": "monitoring-notice.md",
+      "text": "Synthetic monitoring notice: the staging monitoring endpoint was unavailable for planned maintenance from 02:00Z to 02:30Z on 2026-10-12. No production service-health status is included."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "single-source-runbook",
+      "category": "single_source",
+      "query": "What does the runbook recommend checking for intermittent HTTP 500 responses?",
+      "expected_evidence_ids": ["runbook-500-errors"],
+      "known_facts": ["compare request IDs with application logs"],
+      "acceptable_conclusion": "The runbook recommends correlation with logs and upstream timeouts; it does not identify a cause."
+    },
+    {
+      "case_id": "multi-source-payment",
+      "category": "multi_document",
+      "query": "Did payment API 500 errors overlap release 42 and upstream timeouts on October 12?",
+      "expected_evidence_ids": ["deployment-release-42", "gateway-timeout-logs", "vendor-latency-incident"],
+      "known_facts": ["release 42 completed at 13:00Z", "upstream timeout log entries occurred after 13:00Z"],
+      "acceptable_conclusion": "Records overlap in time, but the evidence does not establish a causal relationship."
+    },
+    {
+      "case_id": "ambiguous-orders",
+      "category": "ambiguous",
+      "query": "What happened with order service release 18 at 09:00Z?",
+      "expected_evidence_ids": ["rollout-status-conflict-a", "rollout-status-conflict-b"],
+      "known_facts": ["the calendar reports completed", "the deployment console reports failed"],
+      "acceptable_conclusion": "Sources conflict; verify the authoritative deployment record."
+    },
+    {
+      "case_id": "conflicting-rollout",
+      "category": "conflicting_evidence",
+      "query": "Was order-service release 18 completed or failed?",
+      "expected_evidence_ids": ["rollout-status-conflict-a", "rollout-status-conflict-b"],
+      "known_facts": ["release status is inconsistent across two records"],
+      "acceptable_conclusion": "The release status is contradicted by available records and remains unverified."
+    },
+    {
+      "case_id": "missing-information",
+      "category": "missing_information",
+      "query": "Which employee approved change CHG-555 and what was the rollback command?",
+      "expected_evidence_ids": [],
+      "known_facts": [],
+      "acceptable_conclusion": "The provided evidence set does not contain the approver or rollback command."
+    },
+    {
+      "case_id": "false-correlation",
+      "category": "false_correlation",
+      "query": "Did release 42 cause the payment API errors during the processor latency event?",
+      "expected_evidence_ids": ["deployment-release-42", "gateway-timeout-logs", "vendor-latency-incident"],
+      "known_facts": ["deployment, logs, and provider status overlap in time"],
+      "acceptable_conclusion": "Temporal overlap is not sufficient to attribute the errors to the deployment or provider."
+    },
+    {
+      "case_id": "historical-similarity",
+      "category": "historical_similar_symptoms",
+      "query": "Was the current payment API problem caused by the cache saturation from incident 2025-044?",
+      "expected_evidence_ids": ["historical-cache-incident"],
+      "known_facts": ["incident 2025-044 occurred in 2025"],
+      "acceptable_conclusion": "The old incident is a comparison point, not evidence that the present incident has the same cause."
+    },
+    {
+      "case_id": "tool-provider-failure",
+      "category": "tool_failure",
+      "query": "Show the actual deployment records for service change CHG-555.",
+      "expected_evidence_ids": [],
+      "known_facts": [],
+      "acceptable_conclusion": "The deployment integration is not configured; no live deployment record was retrieved.",
+      "expected_tool_outcome": "not_configured"
+    },
+    {
+      "case_id": "unavailable-monitoring",
+      "category": "unavailable_service",
+      "query": "Was production payment service healthy during the 02:10Z maintenance window?",
+      "expected_evidence_ids": ["monitoring-maintenance"],
+      "known_facts": ["the notice concerns staging only", "no production health result is present"],
+      "acceptable_conclusion": "Production health is unknown; the staging maintenance notice is not production evidence."
+    }
+  ]
+}

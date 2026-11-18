@@ -36,6 +36,6 @@ def search_enterprise_knowledge(query: str, limit: int = 8):
             })
         
         return results
-    except Exception as e:
+    except Exception as exc:
         logger.exception("Qdrant search failed")
-        return []
+        raise RuntimeError("Enterprise knowledge search failed.") from exc

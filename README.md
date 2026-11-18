@@ -1,8 +1,77 @@
-# Agentic RAG System with LangGraph, Qdrant & Reranking
+# EnterpriseIQ
 
-A stateful Retrieval-Augmented Generation (RAG) application that combines document ingestion, semantic vector search, reranking, conversation-aware query planning, and LLM-based response generation.
+## Agentic Enterprise Knowledge & Incident Investigation Platform
 
-The system uses **LangGraph** to orchestrate the query pipeline, **Qdrant** for vector storage and semantic retrieval, **FlashRank** for reranking retrieved documents, **Groq-hosted LLMs** for query planning and response generation, **FastAPI** as the backend API, and **Streamlit** as the user interface.
+EnterpriseIQ evolves the existing AgenticRAG repository into a modular incident-investigation platform. The existing conversational RAG endpoint and ingestion pipeline remain available; the new investigation workflow runs locally with evidence provenance, durable state, and explicitly simulated operational tools.
+
+## Incident investigation quick start
+
+```powershell
+Copy-Item .env.example .env
+uv sync
+uv run alembic upgrade head
+uv run uvicorn app.main:app --reload
+```
+
+In another terminal:
+
+```powershell
+Set-Location frontend
+npm ci
+npm run dev
+```
+
+Open `http://127.0.0.1:5173`. The local investigation workflow uses SQLite, BM25 over existing `processed_data/` chunks, and uploaded files; it requires no provider credentials. Qdrant dense retrieval is opt-in via `ENTERPRISEIQ_ENABLE_EXTERNAL_RETRIEVAL=true`. Provider-backed features must be configured deliberately and should not receive sensitive content without authorization.
+
+The default mock deployment, incident, logs, and health tools make no external calls and return `not_configured`; reports state that no live operational data was queried. The workflow never performs remediation. A single environment API key can be enabled with `ENTERPRISEIQ_API_KEY`; in production it is mandatory and scoped to `ENTERPRISEIQ_ORGANIZATION_ID`. Development organization headers are not authentication.
+
+### Investigation API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/health` | Database health |
+| `POST` | `/api/v1/knowledge/documents` | Validate, parse, deduplicate, version, and index a document |
+| `GET` | `/api/v1/knowledge/documents/{id}` | Check ingestion status |
+| `GET` | `/api/v1/knowledge/search?q=...` | Search with BM25 and optional tenant-filtered dense fusion |
+| `POST` | `/api/v1/investigations` | Start an investigation |
+| `GET` | `/api/v1/investigations` | Investigation history |
+| `GET` | `/api/v1/investigations/{id}` | Plan, evidence, tool history, and status |
+| `GET` | `/api/v1/investigations/{id}/events/stream` | Server-sent workflow updates |
+| `GET` | `/api/v1/investigations/{id}/report` | Evidence-backed report |
+| `POST` | `/api/v1/investigations/{id}/approvals` | Request human approval |
+| `GET` | `/api/v1/approvals` | Pending approval queue |
+| `POST` | `/api/v1/approvals/{id}/decision` | Record approval or rejection |
+
+Uploaded files are limited to 10 MiB; DOCX/PPTX archive contents are limited to 50 MiB expanded by default. Supported formats: PDF, DOCX, PPTX, TXT, Markdown, HTML, CSV, JSON, and log files. SQLite is the local default; set `DATABASE_URL` to a `postgresql+psycopg://...` URL to use PostgreSQL. `APP_ENV=production` applies Alembic migrations during startup and requires an API key.
+
+### Tests and evaluation
+
+```powershell
+uv run pytest -q
+uv run alembic upgrade head
+```
+
+The labelled evaluation set in `evals/datasets/incident_benchmark.json` is synthetic. The retrieval benchmark compares local dense semantic search and BM25+dense fusion without downloading a model or contacting a model provider:
+
+```powershell
+uv run python -m evals.run_benchmark
+```
+
+The default `all-mpnet-base-v2` model must already be cached locally. Results are written to `evals/reports/latest.json` only after a real run; this repository does not claim benchmark scores.
+
+### Docker
+
+Set `POSTGRES_PASSWORD`, `DATABASE_URL` (URL-encode special characters in credentials), and `ENTERPRISEIQ_API_KEY` in `.env`, then run:
+
+```powershell
+docker compose up --build
+```
+
+The compose stack binds the API and Qdrant to localhost and persists PostgreSQL/Qdrant data in Docker volumes.
+
+## Existing conversational RAG
+
+The original `/query` chat path is retained for compatibility. It uses LangGraph, Qdrant, FlashRank, Groq, and Gemini/Sentence Transformers, and is described below. It is separate from the offline-first incident-investigation workflow.
 
 ---
 
@@ -105,23 +174,20 @@ Technical queries are rewritten into retrieval-friendly search queries, embedded
 | Vector Database     | Qdrant                                           |
 | Reranking           | FlashRank                                        |
 | Backend API         | FastAPI                                          |
-| Frontend            | Streamlit                                        |
+| Frontend            | React / TypeScript (new UI), Streamlit (legacy)  |
 | Configuration       | Environment variables (`.env`)                  |
 | Package Management  | uv                                               |
 
 ---
 
-## Run Locally
+## Legacy RAG Run Locally
 
-Create a local environment file from the template and add your Groq, Gemini, and
-Qdrant credentials:
+The legacy chat endpoint requires provider settings. Start the API and Streamlit UI:
 
 ```powershell
 Copy-Item .env.example .env
 uv sync
 ```
-
-Run the API and frontend in separate terminals:
 
 ```powershell
 uv run uvicorn app.main:app --reload
@@ -153,39 +219,21 @@ from normalized block content.
 ## Project Structure
 
 ```text
-RAG-project/
-│
-├── app/
-│   │
-│   ├── agents/
-│   │   ├── nodes/
-│   │   │   ├── planner.py
-│   │   │   ├── retriever.py
-│   │   │   └── responder.py
-│   │   │
-│   │   ├── graph.py
-│   │   └── state.py
-│   │
-│   ├── ingestion/
-│   │   ├── processor.py
-│   │   ├── chunker.py
-│   │   ├── embedder.py
-│   │   └── parsers/
-│   │
-│   ├── config/
-│   │
-│   └── main.py
-│
-├── ui/
-│   └── app.py
-│
-├── DATA/
-│
-├── processed_data/
-│
-├── pyproject.toml
-├── uv.lock
-└── README.md
+app/
+  agents/              # Existing chat graph and responder
+  api/                 # Investigation and knowledge-base routes
+  domain/              # Pydantic investigation/evidence contracts
+  ingestion/           # Existing parsers and ingestion pipeline
+  investigations/      # LangGraph workflow and durable orchestration
+  pages/               # LiveRAG schemas and validation
+  persistence/         # SQLAlchemy models, migrations, graph checkpoints
+  retrieval/           # BM25 and optional Qdrant hybrid search
+  services/retrieval/  # Existing Qdrant, embeddings, FlashRank services
+frontend/              # React/TypeScript application
+evals/                 # Synthetic labelled data and metric runners
+migrations/            # Alembic database schema history
+tests/                 # API, workflow, evaluation, and page tests
+ui/                    # Retained Streamlit compatibility interface
 ```
 
 ---
@@ -453,7 +501,7 @@ Requests using the same `thread_id` can continue the same conversation.
 
 Requests using different thread identifiers maintain independent conversation state.
 
-The current implementation uses an in-memory checkpointer, so conversation state is lost when the application process restarts.
+The legacy `/query` chat uses an in-memory checkpointer and loses chat state on process restart. Incident investigations use a persistent SQLite/PostgreSQL LangGraph checkpointer plus database snapshots and can be replayed after interruption.
 
 ---
 
@@ -581,33 +629,23 @@ FastAPI returns the generated answer, pipeline execution information, and retrie
 
 # Current Limitations
 
-The project is currently a learning and experimentation project rather than a production-ready RAG service.
+The investigation experience is a local-first vertical slice, not a fully integrated enterprise deployment:
 
-Known limitations include:
-
-* Conversation checkpoints are stored in process memory and are lost after application restarts.
-* The system does not currently perform retrieval relevance thresholding.
-* Retrieved answers do not include verified inline citations.
-* Long conversation histories are not automatically summarized or trimmed.
-* Deployment configuration and CI/CD pipelines are not yet included.
+* Deployment, log, monitoring, incident-history, and record tools are typed simulations. Live connectors are not included and return `not_configured`.
+* The deterministic investigation analysis avoids unsupported LLM claims but is intentionally conservative; it does not replace a domain expert or establish causality.
+* Contradiction detection is a narrow status-term heuristic. It is not a general semantic contradiction detector.
+* The API key is a single deployment credential, not an interactive user identity, and organization scoping is not a substitute for production IAM/RBAC.
+* The rate limiter is process-local; multi-worker deployments should enforce limits at a trusted gateway.
+* Dense retrieval is optional and disabled by default. Existing Qdrant points without `organization_id` are excluded from tenant-filtered search until re-indexed.
+* The benchmark data is synthetic, and dense benchmark execution requires the embedding model to be present in the local cache. No benchmark scores are asserted.
+* The legacy `/query` chat still uses in-memory conversation checkpoints; durable investigation checkpoints are separate.
+* PostgreSQL migrations and Docker Compose are provided, but production security, failover, backup, load, and recovery behavior still require deployment-specific verification.
 
 ---
 
 # Future Improvements
 
-Planned improvements include:
-
-* Structured planner outputs using Pydantic models
-* Persistent LangGraph checkpoint storage
-* Retrieval relevance filtering
-* Hybrid dense and sparse retrieval
-* Source citations in generated answers
-* Conversation history summarization
-* Streaming responses
-* Automated testing
-* Docker-based deployment
-* CI/CD pipeline
-* Health and readiness endpoints
+Recommended next steps are real read-only integrations behind permissioned adapters, stronger identity and tenant authorization, semantic conflict verification, integration/load testing against PostgreSQL and Qdrant, operational observability, and a production CI/CD pipeline.
 
 ---
 

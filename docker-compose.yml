@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: enterpriseiq
+      POSTGRES_USER: enterpriseiq
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U enterpriseiq -d enterpriseiq"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:v1.18.0
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+
+  api:
+    build: .
+    environment:
+      APP_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env for PostgreSQL}
+      ENTERPRISEIQ_API_KEY: ${ENTERPRISEIQ_API_KEY:?Set ENTERPRISEIQ_API_KEY in .env}
+      ENTERPRISEIQ_ORGANIZATION_ID: ${ENTERPRISEIQ_ORGANIZATION_ID:-local}
+      ENTERPRISEIQ_ENABLE_EXTERNAL_RETRIEVAL: ${ENTERPRISEIQ_ENABLE_EXTERNAL_RETRIEVAL:-false}
+      ENTERPRISEIQ_MAX_UPLOAD_BYTES: ${ENTERPRISEIQ_MAX_UPLOAD_BYTES:-10485760}
+      ENTERPRISEIQ_MAX_EXPANDED_UPLOAD_BYTES: ${ENTERPRISEIQ_MAX_EXPANDED_UPLOAD_BYTES:-52428800}
+      ENTERPRISEIQ_RATE_LIMIT_PER_MINUTE: ${ENTERPRISEIQ_RATE_LIMIT_PER_MINUTE:-120}
+      QUADRANT_URL: http://qdrant:6333
+      QUADRANT_COLLECTION: ${QUADRANT_COLLECTION:-enterprise_rag}
+      QUADRANT_API_KEY: ${QUADRANT_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  qdrant_data:

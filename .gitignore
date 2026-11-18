@@ -60,6 +60,7 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+enterpriseiq.db
 
 # Flask stuff:
 instance/
@@ -152,6 +153,8 @@ activemq-data/
 .envrc
 .metrics/
 .venv
+frontend/node_modules/
+frontend/dist/
 env/
 venv/
 ENV/
