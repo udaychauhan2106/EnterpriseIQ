@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Rolled back release 52.",
+    "Compare allocation profiles and retained objects in a safe test environment.",
+    "Alert on sustained post-collection heap growth and container restarts."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-006",
+  "status": "resolved",
+  "synthetic": true
+}

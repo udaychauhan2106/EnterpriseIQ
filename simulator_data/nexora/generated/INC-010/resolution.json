@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Paused checkpoint advancement.",
+    "Reconcile missing source event IDs against destination commits.",
+    "Replay from the last verified sink position and add per-partition acknowledgement monitoring."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-010",
+  "status": "resolved",
+  "synthetic": true
+}

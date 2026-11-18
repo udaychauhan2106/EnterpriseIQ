@@ -5,7 +5,7 @@ import logging
 import tempfile
 import zipfile
 from pathlib import Path
-from typing import AsyncIterator
+from typing import AsyncIterator, Literal
 
 from fastapi import (
     APIRouter,
@@ -19,6 +19,7 @@ from fastapi import (
 )
 from fastapi.responses import StreamingResponse
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -32,7 +33,10 @@ from app.domain.models import (
     InvestigationCreate,
     InvestigationEvent,
     KnowledgeSearchResponse,
+    SimulationRunCreate,
+    SyntheticScenarioSummary,
 )
+from app.ingestion.chunking.document import chunk_document_text
 from app.ingestion.loaders.html import parse_html
 from app.ingestion.loaders.office import parse_office
 from app.ingestion.loaders.pdf import parse_pdf
@@ -50,12 +54,25 @@ from app.investigations.service import (
 from app.persistence.database import (
     DocumentChunkRecord,
     DocumentRecord,
+    InvestigationRecord,
     OrganizationRecord,
     get_db_session,
     get_session_factory,
     utc_now,
 )
 from app.retrieval.hybrid import hybrid_search
+from app.simulator.adapter import (
+    deployment_history,
+    incident_history,
+    search_logs,
+    service_health,
+    read_scenario_artifact,
+    scenario_evidence_manifest,
+    structured_metrics,
+)
+from app.simulator.ingestion import ingest_scenario_evidence
+from app.simulator.runs import SimulationRunNotFound, simulation_runs
+from app.simulator.scenarios import SCENARIO_CATALOG, get_scenario
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1")
@@ -70,27 +87,11 @@ def _organization_id(
     return (x_organization_id or "local").strip()[:100] or "local"
 
 
-def _chunk_document(text: str, limit: int = 1200) -> list[str]:
-    chunks: list[str] = []
-    current = ""
-    for paragraph in text.splitlines():
-        remaining = paragraph.strip()
-        if not remaining:
-            continue
-        while len(remaining) > limit:
-            if current:
-                chunks.append(current)
-                current = ""
-            chunks.append(remaining[:limit])
-            remaining = remaining[limit:]
-        if current and len(current) + len(remaining) + 1 > limit:
-            chunks.append(current)
-            current = remaining
-        else:
-            current = f"{current}\n{remaining}".strip()
-    if current:
-        chunks.append(current)
-    return chunks
+def _require_scenario(scenario_id: str):
+    try:
+        return get_scenario(scenario_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Synthetic scenario not found.") from exc
 
 
 def _parse_upload(filename: str, content: bytes) -> str:
@@ -135,6 +136,9 @@ def auth_status() -> dict[str, bool]:
 def start_investigation(
     request: InvestigationCreate,
     background_tasks: BackgroundTasks,
+    idempotency_key: str | None = Header(
+        default=None, alias="Idempotency-Key", max_length=128
+    ),
     session: Session = Depends(get_db_session),
     organization_id: str = Depends(_organization_id),
 ) -> Investigation:
@@ -143,11 +147,216 @@ def start_investigation(
             status_code=413,
             detail="Investigation request exceeds the configured character limit.",
         )
-    investigation = create_investigation(session, request.request, organization_id)
+    request_fingerprint = hashlib.sha256(
+        (
+            request.request
+            + "\n"
+            + (request.simulation_scenario_id or "")
+        ).encode("utf-8")
+    ).hexdigest()
+    if idempotency_key:
+        existing = session.scalar(
+            select(InvestigationRecord).where(
+                InvestigationRecord.organization_id == organization_id,
+                InvestigationRecord.idempotency_key == idempotency_key,
+            )
+        )
+        if existing is not None:
+            if existing.request_fingerprint != request_fingerprint:
+                raise HTTPException(
+                    status_code=409,
+                    detail="Idempotency key was already used for a different investigation.",
+                )
+            return get_investigation(session, existing.id, organization_id)
+    try:
+        if request.simulation_scenario_id:
+            _require_scenario(request.simulation_scenario_id)
+            ingest_scenario_evidence(
+                session, organization_id, request.simulation_scenario_id
+            )
+        investigation = create_investigation(
+            session,
+            request.request,
+            organization_id,
+            request.simulation_scenario_id,
+            idempotency_key,
+            request_fingerprint if idempotency_key else None,
+        )
+    except IntegrityError:
+        if not idempotency_key:
+            raise
+        session.rollback()
+        existing = session.scalar(
+            select(InvestigationRecord).where(
+                InvestigationRecord.organization_id == organization_id,
+                InvestigationRecord.idempotency_key == idempotency_key,
+            )
+        )
+        if existing is None:
+            raise HTTPException(
+                status_code=409,
+                detail="Investigation creation conflicted; retry with the same idempotency key.",
+            )
+        if existing.request_fingerprint != request_fingerprint:
+            raise HTTPException(
+                status_code=409,
+                detail="Idempotency key was already used for a different investigation.",
+            )
+        return get_investigation(session, existing.id, organization_id)
     background_tasks.add_task(
         run_investigation, str(investigation.id), organization_id
     )
     return investigation
+
+
+@router.get("/lab/scenarios", response_model=list[SyntheticScenarioSummary])
+def lab_scenarios() -> list[SyntheticScenarioSummary]:
+    severity_rank = {"debug": 0, "info": 1, "warning": 2, "error": 3, "critical": 4}
+    return [
+        SyntheticScenarioSummary(
+            scenario_id=package.scenario.scenario_id,
+            title=package.scenario.title,
+            description=package.scenario.description,
+            difficulty=package.scenario.difficulty.value,
+            severity=max(
+                (event.severity.value for event in package.scenario.events),
+                key=lambda value: severity_rank[value],
+                default="info",
+            ),
+            affected_services=list(package.scenario.affected_services),
+            synthetic=True,
+        )
+        for package in SCENARIO_CATALOG.values()
+    ]
+
+
+@router.get("/lab/scenarios/{scenario_id}/evidence")
+def lab_scenario_evidence(scenario_id: str) -> dict:
+    _require_scenario(scenario_id)
+    sources = scenario_evidence_manifest(scenario_id)
+    return {
+        "scenario_id": scenario_id,
+        "synthetic": True,
+        "available": bool(sources) and all(source["available"] for source in sources),
+        "sources": sources,
+    }
+
+
+@router.get("/lab/scenarios/{scenario_id}/artifacts/{artifact_id}")
+def lab_scenario_artifact(scenario_id: str, artifact_id: str) -> dict:
+    _require_scenario(scenario_id)
+    try:
+        return read_scenario_artifact(scenario_id, artifact_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Synthetic evidence artifact not found.") from exc
+
+
+@router.post("/lab/scenarios/{scenario_id}/publish", status_code=201)
+def publish_scenario(
+    scenario_id: str,
+    session: Session = Depends(get_db_session),
+    organization_id: str = Depends(_organization_id),
+) -> dict:
+    _require_scenario(scenario_id)
+    result = ingest_scenario_evidence(session, organization_id, scenario_id)
+    session.commit()
+    return result
+
+
+@router.get("/lab/scenarios/{scenario_id}/history")
+def lab_scenario_history(
+    scenario_id: str,
+    q: str = Query(default="", max_length=1000),
+    limit: int = Query(default=20, ge=1, le=100),
+) -> dict:
+    _require_scenario(scenario_id)
+    return incident_history(scenario_id, q, limit)
+
+
+@router.get("/lab/scenarios/{scenario_id}/logs")
+def lab_scenario_logs(
+    scenario_id: str,
+    q: str = Query(default="", max_length=1000),
+    log_type: Literal["application", "infrastructure", "monitoring"] = "application",
+    service_id: str | None = Query(default=None, max_length=100),
+    limit: int = Query(default=50, ge=1, le=200),
+) -> dict:
+    _require_scenario(scenario_id)
+    return search_logs(scenario_id, q, log_type, service_id, limit)
+
+
+@router.get("/lab/scenarios/{scenario_id}/metrics")
+def lab_scenario_metrics(
+    scenario_id: str,
+    q: str = Query(default="", max_length=1000),
+    limit: int = Query(default=50, ge=1, le=200),
+) -> dict:
+    _require_scenario(scenario_id)
+    return structured_metrics(scenario_id, q, limit)
+
+
+@router.get("/lab/scenarios/{scenario_id}/deployments")
+def lab_scenario_deployments(
+    scenario_id: str,
+    q: str = Query(default="", max_length=1000),
+    limit: int = Query(default=50, ge=1, le=200),
+) -> dict:
+    _require_scenario(scenario_id)
+    return deployment_history(scenario_id, q, limit)
+
+
+@router.get("/lab/scenarios/{scenario_id}/health")
+def lab_scenario_health(scenario_id: str) -> dict:
+    _require_scenario(scenario_id)
+    return service_health(scenario_id)
+
+
+@router.get("/lab/runs")
+def lab_runs() -> list[dict]:
+    return simulation_runs.list()
+
+
+@router.post("/lab/runs", status_code=201)
+def start_lab_run(request: SimulationRunCreate) -> dict:
+    _require_scenario(request.scenario_id)
+    return simulation_runs.start(request.scenario_id)
+
+
+@router.get("/lab/runs/{run_id}")
+def lab_run(run_id: str) -> dict:
+    try:
+        return simulation_runs.get(run_id)
+    except SimulationRunNotFound as exc:
+        raise HTTPException(status_code=404, detail="Simulation run not found.") from exc
+
+
+@router.post("/lab/runs/{run_id}/stop")
+def stop_lab_run(run_id: str) -> dict:
+    try:
+        return simulation_runs.stop(run_id)
+    except SimulationRunNotFound as exc:
+        raise HTTPException(status_code=404, detail="Simulation run not found.") from exc
+
+
+@router.post("/lab/runs/{run_id}/replay", status_code=201)
+def replay_lab_run(run_id: str) -> dict:
+    try:
+        return simulation_runs.replay(run_id)
+    except SimulationRunNotFound as exc:
+        raise HTTPException(status_code=404, detail="Simulation run not found.") from exc
+
+
+@router.post("/lab/runs/{run_id}/reset")
+def reset_lab_run(run_id: str) -> dict[str, str | bool]:
+    try:
+        return simulation_runs.remove(run_id)
+    except SimulationRunNotFound as exc:
+        raise HTTPException(status_code=404, detail="Simulation run not found.") from exc
+
+
+@router.post("/lab/reset")
+def reset_lab() -> dict[str, int | bool]:
+    return simulation_runs.reset()
 
 
 @router.get("/investigations", response_model=list[Investigation])
@@ -362,7 +571,7 @@ async def upload_document(
         )
     )
     version = (latest_version or 0) + 1
-    chunks = _chunk_document(text)
+    chunks = chunk_document_text(text)
     session.add(
         DocumentRecord(
             id=document_id,
@@ -373,6 +582,7 @@ async def upload_document(
             metadata_json={
                 "extension": extension,
                 "version": version,
+                "source_type": "uploaded",
                 "uploaded_at": utc_now().isoformat(),
             },
         )
@@ -439,6 +649,7 @@ def knowledge_search(
     q: str = Query(min_length=1, max_length=10_000),
     limit: int = Query(default=8, ge=1, le=20),
     source_type: str | None = Query(default=None, max_length=100),
+    simulation_scenario_id: str | None = Query(default=None, pattern=r"^INC-\d{3}$"),
     session: Session = Depends(get_db_session),
     organization_id: str = Depends(_organization_id),
 ) -> KnowledgeSearchResponse:
@@ -447,7 +658,16 @@ def knowledge_search(
             status_code=413,
             detail="Search query exceeds the configured character limit.",
         )
-    result = hybrid_search(q, session, organization_id, limit=limit, source_type=source_type)
+    if simulation_scenario_id:
+        _require_scenario(simulation_scenario_id)
+    result = hybrid_search(
+        q,
+        session,
+        organization_id,
+        limit=limit,
+        source_type=source_type,
+        simulation_scenario_id=simulation_scenario_id,
+    )
     return KnowledgeSearchResponse(
         evidence=result.evidence,
         retrieval_mode=result.mode,

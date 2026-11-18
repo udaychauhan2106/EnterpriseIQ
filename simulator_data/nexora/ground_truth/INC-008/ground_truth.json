@@ -1,0 +1,82 @@
+{
+  "acceptable_hypotheses": [
+    "The listener and /healthz responded successfully.",
+    "Evidence shows probe failures rather than a process crash."
+  ],
+  "affected_services": [
+    "api-gateway",
+    "authentication-service",
+    "monitoring-service"
+  ],
+  "contributing_factors": [
+    "A separate public health route remained healthy.",
+    "Probe failure was treated as readiness failure rather than process failure."
+  ],
+  "corrective_actions": [
+    "Restore the documented readiness endpoint.",
+    "Test liveness and readiness independently.",
+    "Monitor ready instances and gateway 503 rates."
+  ],
+  "expected_findings": [
+    "Probe failures removed instances despite healthy application responses.",
+    "The probe endpoint change preceded the availability loss."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Probe path changed to /readyz",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Readiness probe receives 404",
+      "offset_seconds": 60
+    },
+    {
+      "event": "Gateway 503s while /healthz returns 200",
+      "offset_seconds": 120
+    },
+    {
+      "event": "Application listener accepts requests",
+      "offset_seconds": 180
+    },
+    {
+      "event": "Orchestrator removes instance",
+      "offset_seconds": 240
+    },
+    {
+      "event": "Probe configuration reverted",
+      "offset_seconds": 420
+    }
+  ],
+  "misleading_evidence": [
+    "Application process crash",
+    "Gateway outage",
+    "Authentication dependency failure"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "deployment_history.json",
+      "contains": "readiness probe path"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "HTTP 404 from /readyz"
+    },
+    {
+      "artifact": "logs/monitoring.log",
+      "contains": "public /healthz check returned 200"
+    },
+    {
+      "artifact": "metrics.csv",
+      "contains": "platform.ready_instances"
+    }
+  ],
+  "resolution_details": "Probe configuration was reverted and authentication instances rejoined service.",
+  "root_cause": "The readiness probe targeted an unimplemented path, causing healthy authentication instances to be removed from service.",
+  "root_cause_keywords": [
+    "readiness probe",
+    "/readyz",
+    "/healthz"
+  ],
+  "scenario_id": "INC-008",
+  "synthetic": true
+}

@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-deploy-46",
+      "event_id": "7098ccc0-e491-5432-a2b5-35f241f23994",
+      "message": "Synthetic release 46 completed; no database schema change was recorded.",
+      "scenario_id": "INC-005",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-mitigation",
+      "event_id": "99ec5c38-495b-5855-ab67-264a25639728",
+      "message": "Synthetic checkout timeout budget was adjusted and downstream retry volume is being observed.",
+      "scenario_id": "INC-005",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:11:30Z"
+    }
+  ],
+  "scenario_id": "INC-005",
+  "synthetic": true
+}

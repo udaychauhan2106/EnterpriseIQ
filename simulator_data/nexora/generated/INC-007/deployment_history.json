@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-deploy-61",
+      "event_id": "1bbcfc08-4080-5c7e-bb48-7867fcceb66b",
+      "message": "Synthetic release 61 completed; checkout retry handling was changed.",
+      "scenario_id": "INC-007",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-mitigation",
+      "event_id": "41d19019-3033-539e-82a3-55b118fa7290",
+      "message": "Synthetic retry path was disabled while transaction reconciliation and a guarded idempotency change are prepared.",
+      "scenario_id": "INC-007",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:12:00Z"
+    }
+  ],
+  "scenario_id": "INC-007",
+  "synthetic": true
+}

@@ -128,6 +128,7 @@ class Investigation(StrictModel):
     id: UUID
     organization_id: str
     request: str
+    simulation_scenario_id: str | None = None
     status: InvestigationStatus
     plan: InvestigationPlan | None = None
     evidence: list[RetrievedEvidence] = Field(default_factory=list)
@@ -144,6 +145,13 @@ class Investigation(StrictModel):
 
 class InvestigationCreate(StrictModel):
     request: str = Field(min_length=8, max_length=10_000)
+    simulation_scenario_id: str | None = Field(
+        default=None, pattern=r"^INC-\d{3}$"
+    )
+
+
+class SimulationRunCreate(StrictModel):
+    scenario_id: str = Field(pattern=r"^INC-\d{3}$")
 
 
 class ApprovalDecisionRequest(StrictModel):
@@ -178,6 +186,16 @@ class KnowledgeSearchResponse(StrictModel):
     evidence: list[RetrievedEvidence]
     retrieval_mode: str
     warnings: list[str] = Field(default_factory=list)
+
+
+class SyntheticScenarioSummary(StrictModel):
+    scenario_id: str
+    title: str
+    description: str
+    difficulty: str
+    severity: str
+    affected_services: list[str]
+    synthetic: bool = True
 
 
 class InvestigationEvent(StrictModel):

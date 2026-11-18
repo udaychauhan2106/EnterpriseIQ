@@ -1,0 +1,162 @@
+{
+  "events": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-deploy-28",
+      "event_id": "1a2ab2e5-17a7-5f7c-a6a4-070a6d26557f",
+      "message": "Synthetic deployment changed the orchestrator readiness probe path to /readyz.",
+      "scenario_id": "INC-008",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "bdf6d7e1-0a2a-57a6-9b05-022b1b109d20",
+      "message": "Synthetic simulation started for INC-008.",
+      "scenario_id": "INC-008",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-probe-1",
+      "event_id": "87bf6a12-871e-5482-8dce-3cf647b07410",
+      "message": "Synthetic readiness probe received HTTP 404 from /readyz; the process remains started.",
+      "scenario_id": "INC-008",
+      "service_id": "authentication-service",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:01:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-route-503",
+      "event_id": "2f3ca16c-3396-5091-8e9b-a031837dfa3d",
+      "message": "Synthetic authentication route returned elevated 503 responses while the public /healthz check returned 200.",
+      "scenario_id": "INC-008",
+      "service_id": "api-gateway",
+      "severity": "error",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "bc5a277b-2b1f-589a-9b4b-b83230776d61",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-008",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "c2e4e744-1df5-5989-96b7-ccd385fbb0b4",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-008",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-listener",
+      "event_id": "1df69ef5-563b-57f2-ad8e-51d02e2c9e5b",
+      "message": "Synthetic application listener is accepting requests on the configured service port.",
+      "scenario_id": "INC-008",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "beeb5bdb-dcf7-5e69-b124-ba0192e661f3",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-008",
+      "service_id": "postgresql",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-probe-2",
+      "event_id": "dd24cfd7-f872-5c06-8686-eca23ca08805",
+      "message": "Synthetic orchestrator removed an instance from service after consecutive readiness failures.",
+      "scenario_id": "INC-008",
+      "service_id": "authentication-service",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-rollback",
+      "event_id": "6f66f5ec-d59d-5062-8bfc-314718f12d17",
+      "message": "Synthetic readiness probe configuration was reverted to the documented endpoint; instances are rejoining.",
+      "scenario_id": "INC-008",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:07:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "175533c0-01d1-53bf-a772-156ab92395cd",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-008",
+      "service_id": "postgresql",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:09:30Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "b3b6b9b7-36e6-58bc-9cd4-0df68d4d98cb",
+      "message": "Synthetic simulation window ended for INC-008; this does not imply the incident was resolved.",
+      "scenario_id": "INC-008",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-008",
+  "synthetic": true
+}

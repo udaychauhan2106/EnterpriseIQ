@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Rolled back the query-plan change.",
+    "Review query plans and add an index only after workload validation.",
+    "Monitor endpoint p95 latency and database read I/O."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-004",
+  "status": "resolved",
+  "synthetic": true
+}

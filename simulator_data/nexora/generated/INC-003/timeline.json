@@ -1,0 +1,176 @@
+{
+  "events": [
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "26921dc6-f98b-5f4a-9975-2e60af618d65",
+      "message": "Synthetic simulation started for INC-003.",
+      "scenario_id": "INC-003",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-deploy-31",
+      "event_id": "3d6385ed-7a87-5537-840c-83ce6a17cada",
+      "message": "Synthetic notification-service deployment recorded; consumer concurrency changed from 8 to 2.",
+      "scenario_id": "INC-003",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "c9657372-9755-57e2-b7af-240df0b32d4e",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-003",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "f00ba1a1-d4f9-53b3-b17f-da338ed7b355",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-003",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:03:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-msg-771",
+      "event_id": "47e5d76a-ca3f-53a7-93c1-0176671581ee",
+      "message": "Synthetic notification delivery age exceeded 6 minutes; message accepted but no delivery receipt was observed.",
+      "scenario_id": "INC-003",
+      "service_id": "notification-service",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:04:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-msg-771",
+      "event_id": "a089e099-5b5f-5559-87fc-4d4aacc4d259",
+      "message": "Synthetic queue depth is rising; oldest unacknowledged message age increased while broker nodes remained healthy.",
+      "scenario_id": "INC-003",
+      "service_id": "message-queue",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:06:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "c25c070e-f486-52c8-abd8-e28a530de5a2",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-003",
+      "service_id": "redis",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:07:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-monitor-12",
+      "event_id": "6da485dc-f07b-5bd8-b978-ad05f364a9d0",
+      "message": "Synthetic message-queue node health is green; consumer acknowledgement lag is not included in the default dashboard.",
+      "scenario_id": "INC-003",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:08:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "c8064ffc-c0ef-5983-b49c-bfcce39ceadc",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-003",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:10:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-msg-812",
+      "event_id": "38be893d-b559-5509-9a88-26053ba976ac",
+      "message": "Synthetic retry worker reported intermittent Redis timeouts for a subset of notification attempts.",
+      "scenario_id": "INC-003",
+      "service_id": "notification-service",
+      "severity": "error",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:11:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "5a5b534e-a787-5d54-862f-a327e69b9161",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-003",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:13:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-deploy-rollback",
+      "event_id": "875c261e-43a1-5cc9-9c6e-309cc9c5ece0",
+      "message": "Synthetic consumer concurrency restored to 8; queue age and delivery receipts are being checked.",
+      "scenario_id": "INC-003",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:13:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "2d69e3d1-95dc-5020-9093-90340390dfcd",
+      "message": "Synthetic simulation window ended for INC-003; this does not imply the incident was resolved.",
+      "scenario_id": "INC-003",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-003",
+  "synthetic": true
+}

@@ -1,0 +1,202 @@
+{
+  "events": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-deploy-61",
+      "event_id": "1bbcfc08-4080-5c7e-bb48-7867fcceb66b",
+      "message": "Synthetic release 61 completed; checkout retry handling was changed.",
+      "scenario_id": "INC-007",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "c06c69f6-e6cb-5bb8-990c-87e3932975ad",
+      "message": "Synthetic simulation started for INC-007.",
+      "scenario_id": "INC-007",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-order-774",
+      "event_id": "3249fec7-4b47-5232-958a-a05adac3a1d5",
+      "message": "Synthetic client retry reused order reference order-sim-774 after a delayed response; request attempt identifiers differ.",
+      "scenario_id": "INC-007",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-order-774",
+      "event_id": "a1dc9082-745a-58ca-a710-2aca7e9a3912",
+      "message": "Synthetic authorization accepted for order-sim-774; application log contains no idempotency-token field for this attempt.",
+      "scenario_id": "INC-007",
+      "service_id": "payment-service",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "ff672f42-c1fb-51cc-bb99-7a4c57c96ed2",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-007",
+      "service_id": "redis",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "30323bb0-8991-5d6b-97c6-86d01dcbacf1",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-007",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-ledger-774",
+      "event_id": "5ef6242c-9bce-5bde-821c-a6192943c32a",
+      "message": "Synthetic ledger contains two committed transaction rows associated with the same simulated order reference.",
+      "scenario_id": "INC-007",
+      "service_id": "postgresql",
+      "severity": "error",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "3becda5c-3ec4-5e1a-be64-ba0ac88e1e3a",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-007",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-duplicate-rate",
+      "event_id": "7420cdc6-128c-5c24-bd81-e7b61f613b91",
+      "message": "Synthetic duplicate-transaction alert increased; gateway response status is delayed for a small request subset.",
+      "scenario_id": "INC-007",
+      "service_id": "monitoring-service",
+      "severity": "warning",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:05:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-receipt-774",
+      "event_id": "13724d29-b772-586b-8887-12dd71644437",
+      "message": "Synthetic payment receipt notification was delivered twice after a consumer retry; source transaction references differ.",
+      "scenario_id": "INC-007",
+      "service_id": "message-queue",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:06:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "17619bb3-a1f4-511b-b2e6-18a5215d5805",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-007",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:06:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "d5afcda9-f283-5ed1-940e-9bc9c419bbaf",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-007",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:09:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc007-mitigation",
+      "event_id": "41d19019-3033-539e-82a3-55b118fa7290",
+      "message": "Synthetic retry path was disabled while transaction reconciliation and a guarded idempotency change are prepared.",
+      "scenario_id": "INC-007",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:12:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "0e06902c-7459-5f08-b7c3-1719895f1dd3",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-007",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:14:30Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "34383fbb-7c49-5ae0-9f93-eaade05d8032",
+      "message": "Synthetic simulation window ended for INC-007; this does not imply the incident was resolved.",
+      "scenario_id": "INC-007",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-007",
+  "synthetic": true
+}

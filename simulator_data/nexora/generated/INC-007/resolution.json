@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Paused the changed retry path.",
+    "Reconcile duplicate ledger records through the approved finance process.",
+    "Enforce a stable idempotency key at the payment transaction boundary and test repeated requests."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-007",
+  "status": "resolved",
+  "synthetic": true
+}

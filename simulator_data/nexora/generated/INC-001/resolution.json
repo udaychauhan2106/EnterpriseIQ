@@ -1,0 +1,10 @@
+{
+  "actions": [
+    "Returned payment worker concurrency to the prior value.",
+    "Observed connection waiters and API latency until they declined."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-001",
+  "status": "resolved",
+  "synthetic": true
+}

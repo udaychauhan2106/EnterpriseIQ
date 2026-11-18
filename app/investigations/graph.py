@@ -1,4 +1,5 @@
 import re
+from collections.abc import Callable
 from datetime import datetime, timezone
 from typing import Any, TypedDict
 from uuid import uuid4
@@ -52,6 +53,7 @@ class InvestigationState(TypedDict, total=False):
     investigation_id: str
     organization_id: str
     request: str
+    simulation_scenario_id: str | None
     plan: dict[str, Any]
     evidence: list[dict[str, Any]]
     hypotheses: list[dict[str, Any]]
@@ -62,6 +64,25 @@ class InvestigationState(TypedDict, total=False):
     warnings: list[str]
     retrieval_mode: str
     report: dict[str, Any]
+
+
+class InvestigationStageError(RuntimeError):
+    def __init__(self, stage: str) -> None:
+        super().__init__(f"Investigation stage {stage} failed.")
+        self.stage = stage
+
+
+def _stage_node(
+    stage: str,
+    node: Callable[[InvestigationState], dict[str, Any]],
+) -> Callable[[InvestigationState], dict[str, Any]]:
+    def execute(state: InvestigationState) -> dict[str, Any]:
+        try:
+            return node(state)
+        except Exception as exc:
+            raise InvestigationStageError(stage) from exc
+
+    return execute
 
 
 def _mark_task(state: InvestigationState, task_id: str) -> dict[str, Any]:
@@ -104,6 +125,7 @@ def retrieval_node(state: InvestigationState) -> dict[str, Any]:
             session,
             state.get("organization_id", "local"),
             limit=8,
+            simulation_scenario_id=state.get("simulation_scenario_id"),
         )
     return {
         **_mark_task(state, "retrieve_knowledge"),
@@ -114,7 +136,9 @@ def retrieval_node(state: InvestigationState) -> dict[str, Any]:
 
 
 def tool_node(state: InvestigationState) -> dict[str, Any]:
-    results = run_read_only_tools(state["request"])
+    results = run_read_only_tools(
+        state["request"], state.get("simulation_scenario_id")
+    )
     return {
         **_mark_task(state, "query_operational_sources"),
         "tool_executions": results,
@@ -300,12 +324,12 @@ def report_node(state: InvestigationState) -> dict[str, Any]:
 
 def build_investigation_graph(checkpointer: Any | None = None):
     graph = StateGraph(InvestigationState)
-    graph.add_node("intake", intake_node)
-    graph.add_node("retrieval", retrieval_node)
-    graph.add_node("tools", tool_node)
-    graph.add_node("analysis", analysis_node)
-    graph.add_node("verification", verification_node)
-    graph.add_node("report", report_node)
+    graph.add_node("intake", _stage_node("intake", intake_node))
+    graph.add_node("retrieval", _stage_node("retrieval", retrieval_node))
+    graph.add_node("tools", _stage_node("tools", tool_node))
+    graph.add_node("analysis", _stage_node("analysis", analysis_node))
+    graph.add_node("verification", _stage_node("verification", verification_node))
+    graph.add_node("report", _stage_node("report", report_node))
     graph.set_entry_point("intake")
     graph.add_edge("intake", "retrieval")
     graph.add_edge("retrieval", "tools")

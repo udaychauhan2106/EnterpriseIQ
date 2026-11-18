@@ -1,0 +1,258 @@
+{
+  "events": [
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "4067cb8e-cca5-5fef-9764-d7067f5856a6",
+      "message": "Synthetic simulation started for INC-005.",
+      "scenario_id": "INC-005",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-deploy-46",
+      "event_id": "7098ccc0-e491-5432-a2b5-35f241f23994",
+      "message": "Synthetic release 46 completed; no database schema change was recorded.",
+      "scenario_id": "INC-005",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "05fbe310-da03-55e8-8486-5cbcd1c2e50d",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-005",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-trace-502",
+      "event_id": "3ca43865-8299-51e6-a677-a4a5fc5cc3b1",
+      "message": "Synthetic checkout attempt exceeded its downstream request deadline and returned a gateway timeout.",
+      "scenario_id": "INC-005",
+      "service_id": "payment-service",
+      "severity": "error",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-dependency-probe",
+      "event_id": "6849a554-b026-57f0-af33-7515c83633d9",
+      "message": "Synthetic payment dependency probe latency increased; probe coverage is intermittent.",
+      "scenario_id": "INC-005",
+      "service_id": "monitoring-service",
+      "severity": "warning",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "2465c5cb-2317-51c4-a7dc-841f47493847",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-005",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-db-check",
+      "event_id": "e469651b-880c-55ed-83f6-1b31945bd57b",
+      "message": "Synthetic database connection use and commit latency remain within the usual range.",
+      "scenario_id": "INC-005",
+      "service_id": "postgresql",
+      "severity": "info",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "5a9ebe21-3deb-5eb6-b26b-1accff7ca6ce",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-005",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-trace-502",
+      "event_id": "264556a2-345e-56db-a0c0-fb0c94b2d1e6",
+      "message": "Synthetic retries increased on a subset of checkout requests; successful requests still complete.",
+      "scenario_id": "INC-005",
+      "service_id": "api-gateway",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:05:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-provider-sample",
+      "event_id": "5bd0f82a-aa9a-542c-a709-e620adc2e6fe",
+      "message": "Synthetic payment gateway response time varied across sampled requests; provider-side detail is unavailable.",
+      "scenario_id": "INC-005",
+      "service_id": "payment-service",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:07:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "4cefa20f-1db9-5f07-8b3e-5a4531fb8e7e",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-005",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:08:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "0104a45b-5ffc-5b13-bfa4-bb779793be70",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-005",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:09:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "370bd16d-e7d4-571a-8a84-80ca12b1ce9a",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-005",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:10:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "be8cc49b-0cd0-5b77-8421-ed81f49cdcf1",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-005",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:10:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc005-mitigation",
+      "event_id": "99ec5c38-495b-5855-ab67-264a25639728",
+      "message": "Synthetic checkout timeout budget was adjusted and downstream retry volume is being observed.",
+      "scenario_id": "INC-005",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:11:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "099b31d4-379a-5dae-b480-a6530309e379",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-005",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:13:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "1451ed07-9d94-5d6c-9390-641e9a519bfc",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-005",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:14:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "4234fbca-be7b-5bd2-bdcb-9eb6a6bdb977",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-005",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:14:30Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "4b462f4f-893d-5719-bf40-0508db972ee5",
+      "message": "Synthetic simulation window ended for INC-005; this does not imply the incident was resolved.",
+      "scenario_id": "INC-005",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-005",
+  "synthetic": true
+}

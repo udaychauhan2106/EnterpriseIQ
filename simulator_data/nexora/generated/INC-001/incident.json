@@ -1,0 +1,17 @@
+{
+  "affected_services": [
+    "api-gateway",
+    "payment-service",
+    "postgresql"
+  ],
+  "description": "Synthetic payment API errors with database and deployment evidence distributed across independent sources.",
+  "difficulty": "easy",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-001",
+  "seed": 20261118,
+  "started_at": "2026-06-15T10:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Payment API connection failures",
+  "window_ended_at": "2026-06-15T10:15:00+00:00"
+}

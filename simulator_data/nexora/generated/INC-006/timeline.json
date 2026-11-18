@@ -1,0 +1,216 @@
+{
+  "events": [
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "2101f138-1dbd-5691-ba7a-e45ddf920e20",
+      "message": "Synthetic simulation started for INC-006.",
+      "scenario_id": "INC-006",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-deploy-52",
+      "event_id": "8de92751-8f3b-5b64-b63e-9465feabab4e",
+      "message": "Synthetic release 52 completed; the worker runtime and batch handler were updated.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "ca20f41d-b426-5191-9e79-2acd66fd006f",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-006",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:01:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "0d70943e-25a3-5f68-b06c-f822e9722268",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-006",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-worker-91",
+      "event_id": "7bb48adb-7739-57cd-98c4-99936b7b8b7c",
+      "message": "Synthetic worker heap-after-collection is trending above its prior hourly range; request volume is stable.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-memory",
+      "event_id": "a924e75d-c4c6-5192-ad92-096608d34768",
+      "message": "Synthetic container working set increased across three samples; CPU remains below its alert threshold.",
+      "scenario_id": "INC-006",
+      "service_id": "monitoring-service",
+      "severity": "warning",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:05:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "35ba529d-8ec3-51d4-9d15-def20e293b9b",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-006",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:05:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-restart-2",
+      "event_id": "e4127a5c-3dc1-5e35-8d08-867b05e623ad",
+      "message": "Synthetic worker container restarted after crossing its memory limit; the replacement is serving traffic.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "error",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:07:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-redis-noise",
+      "event_id": "7881ca69-995e-511e-b43a-7d263697cd1e",
+      "message": "Synthetic cache memory utilization is elevated during the scheduled key-expiration wave.",
+      "scenario_id": "INC-006",
+      "service_id": "redis",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:08:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-worker-91",
+      "event_id": "4f1cb744-7da6-58d1-a0e5-e29036925093",
+      "message": "Synthetic garbage-collection pause time increased while the worker backlog briefly drained after restart.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:10:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "709aa024-98db-5840-8513-9fdef6cea8cb",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-006",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:10:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "2e95ed19-4a55-5387-9a6c-a8596bb758df",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:12:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-rollback",
+      "event_id": "53fe0a4e-110f-5973-aeac-389bdf5abba3",
+      "message": "Synthetic release 52 was rolled back; new worker instances are being checked for repeated heap growth.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:13:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "48e76886-4712-5e98-a158-8ffc67b8788b",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-006",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:13:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "999a3ae2-5e4b-5dd1-8d1e-4e8c70db37d7",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-006",
+      "service_id": "postgresql",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:14:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "5fedc493-3695-543e-8c53-0f353c3b937a",
+      "message": "Synthetic simulation window ended for INC-006; this does not imply the incident was resolved.",
+      "scenario_id": "INC-006",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-006",
+  "synthetic": true
+}

@@ -1,0 +1,160 @@
+{
+  "events": [
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "6edecf68-e8e0-56a0-9eed-751b07015d3b",
+      "message": "Synthetic simulation started for INC-010.",
+      "scenario_id": "INC-010",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-deploy-33",
+      "event_id": "ae37f58b-6b5e-5f4c-abdd-04f5d931d40a",
+      "message": "Synthetic sync consumer release 33 completed with a checkpoint batching change.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-batch-55",
+      "event_id": "00f2601e-471c-52dc-8bc3-20a8f00182b1",
+      "message": "Synthetic consumer advanced its committed offset after a batch attempt; sink confirmation count is lower than the source batch count.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-sink-55",
+      "event_id": "43d8e30d-5029-502d-aa3d-889675712c4e",
+      "message": "Synthetic destination table is missing several source event identifiers from the latest committed offset range.",
+      "scenario_id": "INC-010",
+      "service_id": "postgresql",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-lag-gap",
+      "event_id": "4d3d0521-222c-5904-be73-3ad4a01cc4dd",
+      "message": "Synthetic queue consumer lag dashboard remains near zero; per-partition processing acknowledgements are not displayed.",
+      "scenario_id": "INC-010",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:05:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "505eda6a-4393-57b7-a07c-7e6678843bb6",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-010",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:06:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-timeout-56",
+      "event_id": "f1a47627-c53c-5311-a8d5-908a8314f879",
+      "message": "Synthetic transient destination timeout was recorded during an earlier batch; retry completed without a matching replay audit record.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:06:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "a3aa0a47-31c9-505e-97ac-f7707f1d8abf",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:07:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-offset-57",
+      "event_id": "af89d6d0-5cd9-5bc9-b1bf-698a1bd165b8",
+      "message": "Synthetic partition checkpoint increased across a range with incomplete destination confirmations; broker nodes remain healthy.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "error",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:08:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-replay",
+      "event_id": "5511fae2-d9ff-596b-9173-b0271f3986d9",
+      "message": "Synthetic consumer checkpoint was paused for a bounded reconciliation replay from the last verified sink position.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:13:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "0bc55aab-b542-5497-89f5-7ff9cf6d75f0",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:14:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "012265cc-dd99-59d4-bffb-426d9a966f88",
+      "message": "Synthetic simulation window ended for INC-010; this does not imply the incident was resolved.",
+      "scenario_id": "INC-010",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-010",
+  "synthetic": true
+}

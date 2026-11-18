@@ -1,0 +1,78 @@
+{
+  "acceptable_hypotheses": [
+    "Traffic volume may contribute but does not explain the measured pool waiters.",
+    "Redis contention is not supported by direct evidence."
+  ],
+  "affected_services": [
+    "api-gateway",
+    "payment-service",
+    "postgresql"
+  ],
+  "contributing_factors": [
+    "Worker count increased from 20 to 60.",
+    "The database limit remained 100 connections."
+  ],
+  "corrective_actions": [
+    "Restore safe worker concurrency.",
+    "Tune pool and concurrency together.",
+    "Alert on acquisition waiters and connection saturation."
+  ],
+  "expected_findings": [
+    "Payment 5xx responses followed increased worker concurrency.",
+    "Database connection utilization rose with API latency."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Payment worker concurrency deployment",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Payment connection acquisition timeout",
+      "offset_seconds": 120
+    },
+    {
+      "event": "Database connections near the configured maximum",
+      "offset_seconds": 180
+    },
+    {
+      "event": "API errors and latency rise",
+      "offset_seconds": 240
+    },
+    {
+      "event": "Concurrency rollback",
+      "offset_seconds": 600
+    }
+  ],
+  "misleading_evidence": [
+    "Routine traffic spike",
+    "Database fault",
+    "Redis contention"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "deployment_history.json",
+      "contains": "concurrency changed from 20 to 60"
+    },
+    {
+      "artifact": "logs/application.log",
+      "contains": "connection acquisition timed out"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "96 of 100"
+    },
+    {
+      "artifact": "metrics.csv",
+      "contains": "db.connection_utilization"
+    }
+  ],
+  "resolution_details": "Worker concurrency was rolled back and connection utilization and API latency were observed until they declined.",
+  "root_cause": "Payment worker concurrency was raised beyond the safe database pool capacity, exhausting PostgreSQL connections.",
+  "root_cause_keywords": [
+    "worker concurrency",
+    "connection pool",
+    "connection acquisition"
+  ],
+  "scenario_id": "INC-001",
+  "synthetic": true
+}

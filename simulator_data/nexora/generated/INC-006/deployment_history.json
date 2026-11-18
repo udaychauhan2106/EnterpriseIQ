@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-deploy-52",
+      "event_id": "8de92751-8f3b-5b64-b63e-9465feabab4e",
+      "message": "Synthetic release 52 completed; the worker runtime and batch handler were updated.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc006-rollback",
+      "event_id": "53fe0a4e-110f-5973-aeac-389bdf5abba3",
+      "message": "Synthetic release 52 was rolled back; new worker instances are being checked for repeated heap growth.",
+      "scenario_id": "INC-006",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:13:00Z"
+    }
+  ],
+  "scenario_id": "INC-006",
+  "synthetic": true
+}

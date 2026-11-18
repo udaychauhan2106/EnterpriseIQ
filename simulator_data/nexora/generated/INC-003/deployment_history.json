@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-deploy-31",
+      "event_id": "3d6385ed-7a87-5537-840c-83ce6a17cada",
+      "message": "Synthetic notification-service deployment recorded; consumer concurrency changed from 8 to 2.",
+      "scenario_id": "INC-003",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc003-deploy-rollback",
+      "event_id": "875c261e-43a1-5cc9-9c6e-309cc9c5ece0",
+      "message": "Synthetic consumer concurrency restored to 8; queue age and delivery receipts are being checked.",
+      "scenario_id": "INC-003",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:13:00Z"
+    }
+  ],
+  "scenario_id": "INC-003",
+  "synthetic": true
+}

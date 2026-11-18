@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-deploy-33",
+      "event_id": "ae37f58b-6b5e-5f4c-abdd-04f5d931d40a",
+      "message": "Synthetic sync consumer release 33 completed with a checkpoint batching change.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc010-replay",
+      "event_id": "5511fae2-d9ff-596b-9173-b0271f3986d9",
+      "message": "Synthetic consumer checkpoint was paused for a bounded reconciliation replay from the last verified sink position.",
+      "scenario_id": "INC-010",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:13:00Z"
+    }
+  ],
+  "scenario_id": "INC-010",
+  "synthetic": true
+}

@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-policy-17",
+      "event_id": "b64209eb-2e40-5e28-a365-dba5a5603719",
+      "message": "Synthetic policy bundle 17 was published for a new support-role mapping.",
+      "scenario_id": "INC-009",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-rollback",
+      "event_id": "08cee615-d42d-5ab2-a3cd-131638a22927",
+      "message": "Synthetic policy bundle 17 was withdrawn; authorization audit checks are being repeated.",
+      "scenario_id": "INC-009",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:10:00Z"
+    }
+  ],
+  "scenario_id": "INC-009",
+  "synthetic": true
+}

@@ -14,6 +14,9 @@ RUN pip install --no-cache-dir uv
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 COPY app/ ./app/
+COPY config/ ./config/
+COPY simulator_data/nexora/generated/ ./simulator_data/nexora/generated/
+COPY simulator_data/nexora/ground_truth/ ./simulator_data/nexora/ground_truth/
 COPY migrations/ ./migrations/
 COPY alembic.ini ./
 COPY --from=frontend /frontend/dist ./frontend/dist

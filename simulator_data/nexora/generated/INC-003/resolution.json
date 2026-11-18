@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Restored notification consumer concurrency to the prior setting.",
+    "Monitored queue age and delivery receipts until backlog declined.",
+    "Scheduled a review of consumer-lag dashboard coverage."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-003",
+  "status": "resolved",
+  "synthetic": true
+}

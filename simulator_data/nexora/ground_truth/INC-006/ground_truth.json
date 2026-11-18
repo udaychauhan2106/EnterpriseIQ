@@ -1,0 +1,88 @@
+{
+  "acceptable_hypotheses": [
+    "CPU and request volume stayed stable; Redis growth was separately scoped.",
+    "The backlog briefly drained after restart rather than preceding memory growth."
+  ],
+  "affected_services": [
+    "api-gateway",
+    "notification-service",
+    "redis",
+    "monitoring-service"
+  ],
+  "contributing_factors": [
+    "Memory symptoms were delayed.",
+    "A concurrent Redis expiration wave was a plausible but separate signal."
+  ],
+  "corrective_actions": [
+    "Roll back release 52.",
+    "Compare allocation profiles in a safe environment.",
+    "Alert on post-collection heap growth."
+  ],
+  "expected_findings": [
+    "Post-collection worker heap grew after the release.",
+    "Worker restarts aligned with memory-limit crossings."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Release 52 changes worker runtime",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Post-collection heap trend rises",
+      "offset_seconds": 180
+    },
+    {
+      "event": "Container working set increases",
+      "offset_seconds": 300
+    },
+    {
+      "event": "Worker restarts at memory limit",
+      "offset_seconds": 420
+    },
+    {
+      "event": "Redis expiration noise",
+      "offset_seconds": 510
+    },
+    {
+      "event": "Garbage-collection pauses rise",
+      "offset_seconds": 600
+    },
+    {
+      "event": "Release rollback",
+      "offset_seconds": 780
+    }
+  ],
+  "misleading_evidence": [
+    "Redis cache growth",
+    "Traffic spike",
+    "Worker backlog"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "deployment_history.json",
+      "contains": "release 52"
+    },
+    {
+      "artifact": "logs/application.log",
+      "contains": "heap-after-collection"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "crossing its memory limit"
+    },
+    {
+      "artifact": "metrics.csv",
+      "contains": "container.memory_working_set"
+    }
+  ],
+  "resolution_details": "Release 52 was rolled back and new worker instances were checked for repeated heap growth.",
+  "root_cause": "Release 52 introduced a notification-worker memory leak that accumulated over time and caused container restarts.",
+  "root_cause_keywords": [
+    "release 52",
+    "heap",
+    "memory growth",
+    "rollback"
+  ],
+  "scenario_id": "INC-006",
+  "synthetic": true
+}

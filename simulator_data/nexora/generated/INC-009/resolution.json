@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Withdrawn policy bundle 17 and reviewed the affected synthetic access records.",
+    "Narrow the resource selector and verify least-privilege policy tests.",
+    "Audit grants and denials after the corrected bundle is published."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-009",
+  "status": "resolved",
+  "synthetic": true
+}

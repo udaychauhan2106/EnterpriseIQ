@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-deploy-28",
+      "event_id": "1a2ab2e5-17a7-5f7c-a6a4-070a6d26557f",
+      "message": "Synthetic deployment changed the orchestrator readiness probe path to /readyz.",
+      "scenario_id": "INC-008",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc008-rollback",
+      "event_id": "6f66f5ec-d59d-5062-8bfc-314718f12d17",
+      "message": "Synthetic readiness probe configuration was reverted to the documented endpoint; instances are rejoining.",
+      "scenario_id": "INC-008",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:07:00Z"
+    }
+  ],
+  "scenario_id": "INC-008",
+  "synthetic": true
+}

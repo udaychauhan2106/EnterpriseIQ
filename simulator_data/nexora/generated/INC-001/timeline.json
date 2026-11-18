@@ -1,0 +1,164 @@
+{
+  "events": [
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "12b538cb-d09d-5008-ba19-878977fdf3e7",
+      "message": "Synthetic simulation started for INC-001.",
+      "scenario_id": "INC-001",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc001-deploy-42",
+      "event_id": "533c0354-5ebc-510e-9f15-eeda93a5aafb",
+      "message": "Synthetic payment-service release 42 completed; worker concurrency changed from 20 to 60.",
+      "scenario_id": "INC-001",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc001-trace-8842",
+      "event_id": "7ef7d875-bb4c-5bb3-aa2b-6190c5444651",
+      "message": "Synthetic charge request returned HTTP 500 after database connection acquisition timed out.",
+      "scenario_id": "INC-001",
+      "service_id": "payment-service",
+      "severity": "error",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:02:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "c48d06a5-ba26-53f0-a7b7-3cc7063b8140",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-001",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:02:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc001-trace-8842",
+      "event_id": "7827e606-083f-55ba-a0f2-77b19ee02795",
+      "message": "Synthetic database active connections reached 96 of 100; connection waiters increased.",
+      "scenario_id": "INC-001",
+      "service_id": "postgresql",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:03:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc001-trace-8842",
+      "event_id": "9ac74d68-5b03-5935-8632-79889e20d4a8",
+      "message": "Synthetic API error rate and p95 request latency rose during the payment-service incident window.",
+      "scenario_id": "INC-001",
+      "service_id": "api-gateway",
+      "severity": "warning",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:04:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "413cafac-85c7-55c0-a347-759b377bc6f7",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-001",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:04:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "78acb4bf-0f31-5570-af9d-e7a8f22c1969",
+      "message": "Synthetic background request completed within the expected range.",
+      "scenario_id": "INC-001",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:05:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc001-deploy-rollback",
+      "event_id": "d47897c5-b356-5fe9-ae52-4a1845a900b1",
+      "message": "Synthetic worker concurrency rollback recorded; post-change connection utilization is being observed.",
+      "scenario_id": "INC-001",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:10:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "f7f466b3-9e93-5585-a09d-2f2864b71b3a",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-001",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:12:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "6634c9c3-28f0-5e3d-b9b4-2529b6b30235",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-001",
+      "service_id": "postgresql",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:14:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "d6f7307c-4e02-5e2e-bdcd-11d22b1636a7",
+      "message": "Synthetic simulation window ended for INC-001; this does not imply the incident was resolved.",
+      "scenario_id": "INC-001",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-001",
+  "synthetic": true
+}

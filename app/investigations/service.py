@@ -14,7 +14,7 @@ from app.domain.models import (
     InvestigationStatus,
     ToolExecution,
 )
-from app.investigations.graph import build_investigation_graph
+from app.investigations.graph import InvestigationStageError, build_investigation_graph
 from app.persistence.database import (
     ApprovalRecord,
     AuditEventRecord,
@@ -79,6 +79,7 @@ def _to_investigation(
         "id": UUID(record.id),
         "organization_id": record.organization_id,
         "request": record.request,
+        "simulation_scenario_id": record.simulation_scenario_id,
         "status": record.status,
         "plan": record.plan,
         "evidence": record.evidence or [],
@@ -96,7 +97,12 @@ def _to_investigation(
 
 
 def create_investigation(
-    session: Session, request: str, organization_id: str = "local"
+    session: Session,
+    request: str,
+    organization_id: str = "local",
+    simulation_scenario_id: str | None = None,
+    idempotency_key: str | None = None,
+    request_fingerprint: str | None = None,
 ) -> Investigation:
     if session.get(OrganizationRecord, organization_id) is None:
         session.add(OrganizationRecord(id=organization_id, name=organization_id))
@@ -106,6 +112,9 @@ def create_investigation(
         id=str(uuid4()),
         organization_id=organization_id,
         request=request,
+        simulation_scenario_id=simulation_scenario_id,
+        idempotency_key=idempotency_key,
+        request_fingerprint=request_fingerprint,
         status=InvestigationStatus.queued.value,
         evidence=[],
         hypotheses=[],
@@ -150,6 +159,7 @@ def run_investigation(investigation_id: str, organization_id: str = "local") -> 
 
 def _run_investigation(investigation_id: str, organization_id: str) -> None:
     factory = get_session_factory()
+    last_completed_stage: str | None = None
     with factory() as session:
         record = session.scalar(
             select(InvestigationRecord).where(
@@ -165,6 +175,7 @@ def _run_investigation(investigation_id: str, organization_id: str) -> None:
             "investigation_id": record.id,
             "organization_id": organization_id,
             "request": record.request,
+            "simulation_scenario_id": record.simulation_scenario_id,
             "evidence": [],
             "hypotheses": [],
             "findings": [],
@@ -232,13 +243,51 @@ def _run_investigation(investigation_id: str, organization_id: str) -> None:
                     if node_name == "report":
                         record.report = state.get("report")
                         record.status = InvestigationStatus.completed.value
+                    event_messages = {
+                        "intake": "Parsed the incident request and created an investigation plan.",
+                        "retrieval": (
+                            f"Retrieved {len(record.evidence or [])} evidence excerpt(s) "
+                            f"using {state.get('retrieval_mode', 'unknown')} search."
+                        ),
+                        "tools": (
+                            f"Queried approved operational sources; "
+                            f"{len(record.tool_executions or [])} tool call(s) completed."
+                        ),
+                        "analysis": (
+                            f"Generated {len(record.hypotheses or [])} hypothesis/hypotheses "
+                            f"and {len(record.findings or [])} finding(s)."
+                        ),
+                        "verification": (
+                            f"Verified finding citations against "
+                            f"{len(record.evidence or [])} retrieved evidence item(s)."
+                        ),
+                        "report": (
+                            f"Generated a report from {len(record.evidence or [])} evidence "
+                            "item(s); no root cause is confirmed."
+                        ),
+                    }
+                    event_data: dict[str, Any] = {"step": node_name}
+                    if node_name == "retrieval":
+                        event_data.update(
+                            {
+                                "evidence_count": len(record.evidence or []),
+                                "retrieval_mode": state.get("retrieval_mode", "unknown"),
+                            }
+                        )
+                    if node_name == "analysis":
+                        event_data.update(
+                            {
+                                "hypothesis_count": len(record.hypotheses or []),
+                                "finding_count": len(record.findings or []),
+                            }
+                        )
                     _event(
                         session,
                         organization_id,
                         record.id,
                         node_name,
-                        f"Completed {node_name} step.",
-                        {"step": node_name},
+                        event_messages.get(node_name, f"Completed {node_name} step."),
+                        event_data,
                     )
                     if node_name == "report":
                         session.add(
@@ -253,6 +302,7 @@ def _run_investigation(investigation_id: str, organization_id: str) -> None:
                             )
                         )
                     session.commit()
+                    last_completed_stage = node_name
             checkpoint_state = graph.get_state(config).values
             if checkpoint_state.get("report"):
                 with factory() as session:
@@ -270,6 +320,10 @@ def _run_investigation(investigation_id: str, organization_id: str) -> None:
                         session.commit()
     except Exception as exc:
         logger.exception("Investigation %s failed", investigation_id)
+        failed_stage = (
+            exc.stage if isinstance(exc, InvestigationStageError) else None
+        )
+        cause = exc.__cause__ if isinstance(exc, InvestigationStageError) else exc
         with factory() as session:
             record = session.scalar(
                 select(InvestigationRecord).where(
@@ -290,8 +344,21 @@ def _run_investigation(investigation_id: str, organization_id: str) -> None:
                     organization_id,
                     record.id,
                     "failed",
-                    "Investigation workflow failed; inspect backend logs.",
-                    {"error_type": type(exc).__name__},
+                    (
+                        f"Investigation workflow failed during {failed_stage}."
+                        if failed_stage
+                        else (
+                            "Investigation workflow failed after "
+                            f"{last_completed_stage} completed; failing stage is unknown."
+                            if last_completed_stage
+                            else "Investigation workflow failed before any stage was completed."
+                        )
+                    ),
+                    {
+                        "error_type": type(cause).__name__,
+                        "failed_stage": failed_stage,
+                        "last_completed_stage": last_completed_stage,
+                    },
                 )
                 session.add(
                     AuditEventRecord(

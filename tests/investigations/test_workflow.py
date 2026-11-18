@@ -308,3 +308,268 @@ def test_startup_replays_interrupted_investigation(api_client) -> None:
     recovered = api_client.get(f"/api/v1/investigations/{investigation_id}")
     assert recovered.json()["status"] == "completed"
     assert recovered.json()["report"] is not None
+
+
+def test_synthetic_scenario_is_ingested_and_tools_are_run_scoped(api_client) -> None:
+    catalog = api_client.get("/api/v1/lab/scenarios")
+    assert catalog.status_code == 200
+    assert {item["scenario_id"] for item in catalog.json()} == {
+        f"INC-{number:03}"
+        for number in range(1, 11)
+    }
+    assert all(item["synthetic"] for item in catalog.json())
+    assert "ground_truth" not in catalog.text.casefold()
+
+    published_payment = api_client.post("/api/v1/lab/scenarios/INC-001/publish")
+    published_auth = api_client.post("/api/v1/lab/scenarios/INC-002/publish")
+    assert published_payment.status_code == published_auth.status_code == 201
+    assert published_payment.json()["document_count"] == 10
+    republished_payment = api_client.post("/api/v1/lab/scenarios/INC-001/publish")
+    assert republished_payment.json()["documents"] == published_payment.json()["documents"]
+
+    scoped_search = api_client.get(
+        "/api/v1/knowledge/search",
+        params={
+            "q": "payment API database connection timeout",
+            "simulation_scenario_id": "INC-001",
+        },
+    )
+    assert scoped_search.status_code == 200
+    assert scoped_search.json()["evidence"]
+    assert {
+        item["metadata"]["scenario_id"]
+        for item in scoped_search.json()["evidence"]
+    } == {"INC-001"}
+
+    investigation = api_client.post(
+        "/api/v1/investigations",
+        json={
+            "request": (
+                "Investigate payment API failures and correlate database "
+                "connection timeouts with deployment evidence."
+            ),
+            "simulation_scenario_id": "INC-001",
+        },
+    )
+    assert investigation.status_code == 202
+    result = api_client.get(f"/api/v1/investigations/{investigation.json()['id']}")
+    assert result.json()["status"] == "completed"
+    assert result.json()["simulation_scenario_id"] == "INC-001"
+    assert result.json()["evidence"]
+    assert all(
+        item["metadata"]["scenario_id"] == "INC-001"
+        for item in result.json()["evidence"]
+    )
+    tool_results = result.json()["tool_executions"]
+    assert len(tool_results) == 5
+    assert all(item["status"] == "completed" and item["simulated"] for item in tool_results)
+    assert all(item["output"]["synthetic"] for item in tool_results)
+
+
+def test_demo_scenario_summary_exposes_severity_and_source_inspection(api_client) -> None:
+    scenarios = api_client.get("/api/v1/lab/scenarios")
+    assert scenarios.status_code == 200
+    summary = next(
+        item for item in scenarios.json() if item["scenario_id"] == "INC-007"
+    )
+    assert summary["severity"] in {"info", "warning", "error", "critical"}
+    assert summary["affected_services"]
+
+    manifest = api_client.get("/api/v1/lab/scenarios/INC-007/evidence")
+    assert manifest.status_code == 200
+    assert manifest.json()["available"] is True
+    assert all(source["available"] for source in manifest.json()["sources"])
+
+    source = next(
+        item
+        for item in manifest.json()["sources"]
+        if item["artifact_id"] == "application-logs"
+    )
+    artifact = api_client.get(
+        f"/api/v1/lab/scenarios/INC-007/artifacts/{source['artifact_id']}"
+    )
+    assert artifact.status_code == 200
+    assert artifact.json()["synthetic"] is True
+    assert "correlation_id=" in artifact.json()["content"]
+    assert "ground_truth" not in artifact.json()["source"]
+
+    unknown = api_client.get(
+        "/api/v1/lab/scenarios/INC-007/artifacts/../../ground_truth"
+    )
+    assert unknown.status_code == 404
+
+
+def test_investigation_idempotency_reuses_record_and_rejects_key_reuse(
+    api_client,
+) -> None:
+    headers = {"Idempotency-Key": "demo-run-inc-001-abc123"}
+    payload = {
+        "request": "Investigate the synthetic payment API failure evidence.",
+        "simulation_scenario_id": "INC-001",
+    }
+    first = api_client.post(
+        "/api/v1/investigations", headers=headers, json=payload
+    )
+    repeated = api_client.post(
+        "/api/v1/investigations", headers=headers, json=payload
+    )
+    assert first.status_code == repeated.status_code == 202
+    assert repeated.json()["id"] == first.json()["id"]
+
+    other_organization = api_client.post(
+        "/api/v1/investigations",
+        headers={**headers, "X-Organization-Id": "demo-team-b"},
+        json=payload,
+    )
+    assert other_organization.status_code == 202
+    assert other_organization.json()["id"] != first.json()["id"]
+
+    conflicting = api_client.post(
+        "/api/v1/investigations",
+        headers=headers,
+        json={
+            "request": "Investigate a different incident with another request.",
+            "simulation_scenario_id": "INC-001",
+        },
+    )
+    assert conflicting.status_code == 409
+
+
+def test_workflow_failure_reports_last_persisted_stage(api_client, monkeypatch) -> None:
+    class FailingGraph:
+        def stream(self, state, config, stream_mode):
+            yield {
+                "intake": {
+                    "plan": {
+                        "objective": state["request"],
+                        "tasks": [],
+                        "max_steps": 8,
+                    }
+                }
+            }
+            raise RuntimeError("synthetic workflow failure")
+
+    monkeypatch.setattr(
+        "app.investigations.service.build_investigation_graph",
+        lambda checkpointer: FailingGraph(),
+    )
+    created = api_client.post(
+        "/api/v1/investigations",
+        json={"request": "Investigate the synthetic payment timeout evidence."},
+    )
+    assert created.status_code == 202
+    investigation_id = created.json()["id"]
+    detail = api_client.get(f"/api/v1/investigations/{investigation_id}")
+    assert detail.json()["status"] == "failed"
+
+    events = api_client.get(
+        f"/api/v1/investigations/{investigation_id}/events"
+    ).json()
+    failure = next(event for event in events if event["event_type"] == "failed")
+    assert failure["data"]["failed_stage"] is None
+    assert failure["data"]["last_completed_stage"] == "intake"
+    assert "after intake completed; failing stage is unknown" in failure["message"]
+
+
+def test_workflow_node_failure_identifies_failed_stage(api_client, monkeypatch) -> None:
+    def fail_intake(state):
+        raise RuntimeError("synthetic intake failure")
+
+    monkeypatch.setattr("app.investigations.graph.intake_node", fail_intake)
+    created = api_client.post(
+        "/api/v1/investigations",
+        json={"request": "Investigate the synthetic payment timeout evidence."},
+    )
+    investigation_id = created.json()["id"]
+    events = api_client.get(
+        f"/api/v1/investigations/{investigation_id}/events"
+    ).json()
+    failure = next(event for event in events if event["event_type"] == "failed")
+    assert failure["data"]["failed_stage"] == "intake"
+    assert "failed during intake" in failure["message"]
+
+
+def test_lab_api_rejects_unknown_scenarios_and_does_not_expose_truth(api_client) -> None:
+    unknown = api_client.get("/api/v1/lab/scenarios/INC-999/metrics")
+    unpublished_truth = api_client.get("/api/v1/lab/scenarios/INC-001/ground_truth")
+    invalid_investigation = api_client.post(
+        "/api/v1/investigations",
+        json={
+            "request": "Investigate an unknown synthetic scenario safely.",
+            "simulation_scenario_id": "INC-999",
+        },
+    )
+
+    assert unknown.status_code == 404
+    assert unpublished_truth.status_code == 404
+    assert invalid_investigation.status_code == 404
+
+
+def test_lab_log_and_metric_apis_return_synthetic_source_data(api_client) -> None:
+    infra_logs = api_client.get(
+        "/api/v1/lab/scenarios/INC-003/logs",
+        params={"log_type": "infrastructure", "q": "queue backlog"},
+    )
+    metrics = api_client.get(
+        "/api/v1/lab/scenarios/INC-003/metrics",
+        params={"q": "queue depth"},
+    )
+    health = api_client.get("/api/v1/lab/scenarios/INC-003/health")
+    deployments = api_client.get("/api/v1/lab/scenarios/INC-003/deployments")
+
+    assert infra_logs.status_code == metrics.status_code == health.status_code == 200
+    assert deployments.status_code == 200
+    assert infra_logs.json()["synthetic"]
+    assert infra_logs.json()["records"]
+    assert metrics.json()["synthetic"]
+    assert metrics.json()["records"]
+    assert health.json()["synthetic"]
+    assert health.json()["source"] == "generated event severity; not a live health probe"
+    assert deployments.json()["records"]
+    notification_health = next(
+        service
+        for service in health.json()["services"]
+        if service["service_id"] == "notification-service"
+    )
+    assert notification_health["observed_status"] == "degraded_signal_observed"
+
+
+def test_simulation_run_api_supports_progress_stop_replay_and_reset(api_client) -> None:
+    reset = api_client.post("/api/v1/lab/reset")
+    assert reset.status_code == 200
+    started = api_client.post(
+        "/api/v1/lab/runs",
+        json={"scenario_id": "INC-008"},
+    )
+    assert started.status_code == 201
+    run = started.json()
+    assert run["synthetic"] is True
+    assert run["status"] == "running"
+    assert run["scenario_id"] == "INC-008"
+    assert run["events"]
+
+    listed = api_client.get("/api/v1/lab/runs")
+    assert listed.status_code == 200
+    assert any(item["run_id"] == run["run_id"] for item in listed.json())
+
+    stopped = api_client.post(f"/api/v1/lab/runs/{run['run_id']}/stop")
+    assert stopped.status_code == 200
+    assert stopped.json()["status"] == "stopped"
+
+    replay = api_client.post(f"/api/v1/lab/runs/{run['run_id']}/replay")
+    assert replay.status_code == 201
+    assert replay.json()["replay_of"] == run["run_id"]
+    assert replay.json()["seed"] == run["seed"]
+    assert [
+        event["event_id"] for event in replay.json()["events"]
+    ] == [event["event_id"] for event in run["events"]]
+
+    removed = api_client.post(f"/api/v1/lab/runs/{run['run_id']}/reset")
+    assert removed.status_code == 200
+    assert removed.json()["reset"] is True
+    assert api_client.get(f"/api/v1/lab/runs/{run['run_id']}").status_code == 404
+
+    cleared = api_client.post("/api/v1/lab/reset")
+    assert cleared.status_code == 200
+    assert cleared.json()["reset"] is True
+    assert api_client.get("/api/v1/lab/runs").json() == []

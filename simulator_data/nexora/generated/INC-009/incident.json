@@ -1,0 +1,17 @@
+{
+  "affected_services": [
+    "api-gateway",
+    "authentication-service",
+    "postgresql"
+  ],
+  "description": "Medium synthetic authorization incident with audit, policy, and token evidence.",
+  "difficulty": "medium",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-009",
+  "seed": 20261118,
+  "started_at": "2026-06-15T12:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Unexpected access from policy scope change",
+  "window_ended_at": "2026-06-15T12:15:00+00:00"
+}

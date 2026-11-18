@@ -1,0 +1,170 @@
+{
+  "acceptable_hypotheses": [
+    "D",
+    "a",
+    "t",
+    "a",
+    "b",
+    "a",
+    "s",
+    "e",
+    " ",
+    "a",
+    "n",
+    "d",
+    " ",
+    "r",
+    "e",
+    "l",
+    "e",
+    "a",
+    "s",
+    "e",
+    " ",
+    "e",
+    "v",
+    "i",
+    "d",
+    "e",
+    "n",
+    "c",
+    "e",
+    " ",
+    "d",
+    "o",
+    " ",
+    "n",
+    "o",
+    "t",
+    " ",
+    "a",
+    "c",
+    "c",
+    "o",
+    "u",
+    "n",
+    "t",
+    " ",
+    "f",
+    "o",
+    "r",
+    " ",
+    "t",
+    "h",
+    "e",
+    " ",
+    "e",
+    "x",
+    "t",
+    "e",
+    "r",
+    "n",
+    "a",
+    "l",
+    " ",
+    "d",
+    "e",
+    "p",
+    "e",
+    "n",
+    "d",
+    "e",
+    "n",
+    "c",
+    "y",
+    " ",
+    "l",
+    "a",
+    "t",
+    "e",
+    "n",
+    "c",
+    "y",
+    " ",
+    "s",
+    "a",
+    "m",
+    "p",
+    "l",
+    "e",
+    "s",
+    "."
+  ],
+  "affected_services": [
+    "api-gateway",
+    "payment-service",
+    "postgresql",
+    "monitoring-service"
+  ],
+  "contributing_factors": [
+    "Retries increased for some requests.",
+    "Provider-side telemetry was incomplete."
+  ],
+  "corrective_actions": [
+    "Bound retries and align deadlines.",
+    "Confirm provider health using request IDs.",
+    "Reconcile timed-out attempts before retry."
+  ],
+  "expected_findings": [
+    "Payment dependency latency and checkout timeout rates increased.",
+    "PostgreSQL commit timing remained near baseline."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Release 46 recorded",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Checkout downstream deadline exceeded",
+      "offset_seconds": 120
+    },
+    {
+      "event": "Dependency probe latency increases",
+      "offset_seconds": 180
+    },
+    {
+      "event": "Database remains within baseline",
+      "offset_seconds": 240
+    },
+    {
+      "event": "Gateway retries increase",
+      "offset_seconds": 330
+    },
+    {
+      "event": "Timeout budget adjusted",
+      "offset_seconds": 690
+    }
+  ],
+  "misleading_evidence": [
+    "Database slow commits",
+    "Redis outage",
+    "Application release regression"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "logs/application.log",
+      "contains": "downstream request deadline"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "payment gateway response time"
+    },
+    {
+      "artifact": "metrics.csv",
+      "contains": "dependency.payment_gateway_p95"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "connection use and commit latency remain within the usual range"
+    }
+  ],
+  "resolution_details": "The timeout budget was adjusted and downstream retry volume was observed.",
+  "root_cause": "Intermittent timeouts from the external simulated payment gateway exceeded the checkout downstream deadline.",
+  "root_cause_keywords": [
+    "payment gateway",
+    "downstream deadline",
+    "dependency latency"
+  ],
+  "scenario_id": "INC-005",
+  "synthetic": true
+}

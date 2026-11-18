@@ -1,0 +1,146 @@
+{
+  "events": [
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "97a99bf4-09fa-5de2-a679-a505ab785961",
+      "message": "Synthetic simulation started for INC-009.",
+      "scenario_id": "INC-009",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-policy-17",
+      "event_id": "b64209eb-2e40-5e28-a365-dba5a5603719",
+      "message": "Synthetic policy bundle 17 was published for a new support-role mapping.",
+      "scenario_id": "INC-009",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-request-22",
+      "event_id": "f6cf558a-18a9-58af-b5ea-7a440c632acd",
+      "message": "Synthetic protected route recorded an elevated request from a support-role test identity; no authentication failure occurred.",
+      "scenario_id": "INC-009",
+      "service_id": "api-gateway",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:01:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-audit-22",
+      "event_id": "da052be9-2b89-5563-bd6b-6a60ea95094f",
+      "message": "Synthetic audit row records a read against a restricted support dataset by a valid service token.",
+      "scenario_id": "INC-009",
+      "service_id": "postgresql",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-claims-22",
+      "event_id": "e6085347-ba3d-54a8-8306-d49ad363df67",
+      "message": "Synthetic token signature and expiry checks passed; assigned role claims differ from the prior policy snapshot.",
+      "scenario_id": "INC-009",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "97b0f021-3d5b-523b-9e42-4ff415f0f02a",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-009",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-denial-noise",
+      "event_id": "40967de5-e4da-599b-80c5-a007de7c50a4",
+      "message": "Synthetic denied-request count also increased on an unrelated route following routine policy-cache refresh.",
+      "scenario_id": "INC-009",
+      "service_id": "api-gateway",
+      "severity": "info",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-eval-22",
+      "event_id": "ae0c7d01-8682-5e79-a0f5-d249025be101",
+      "message": "Synthetic policy evaluator matched a broader resource selector than the approved support-role mapping.",
+      "scenario_id": "INC-009",
+      "service_id": "authentication-service",
+      "severity": "error",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:06:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc009-rollback",
+      "event_id": "08cee615-d42d-5ab2-a3cd-131638a22927",
+      "message": "Synthetic policy bundle 17 was withdrawn; authorization audit checks are being repeated.",
+      "scenario_id": "INC-009",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:10:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "c5a853d3-08f0-5487-94e6-44146d60c74b",
+      "message": "Synthetic routine health poll completed without an alert.",
+      "scenario_id": "INC-009",
+      "service_id": "message-queue",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:10:30Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "718e2389-a527-5e45-aef0-055823a2de49",
+      "message": "Synthetic simulation window ended for INC-009; this does not imply the incident was resolved.",
+      "scenario_id": "INC-009",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-009",
+  "synthetic": true
+}

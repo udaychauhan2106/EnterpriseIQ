@@ -1,0 +1,18 @@
+{
+  "affected_services": [
+    "api-gateway",
+    "payment-service",
+    "postgresql",
+    "redis"
+  ],
+  "description": "Synthetic API latency with query, database, and deployment evidence.",
+  "difficulty": "medium",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-004",
+  "seed": 20261118,
+  "started_at": "2026-06-15T12:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "API latency from database query regression",
+  "window_ended_at": "2026-06-15T12:15:00+00:00"
+}

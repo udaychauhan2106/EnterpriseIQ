@@ -1,0 +1,18 @@
+{
+  "affected_services": [
+    "api-gateway",
+    "authentication-service",
+    "redis",
+    "postgresql"
+  ],
+  "description": "Synthetic authentication failures involving signing-key metadata, deployment history, and noisy gateway responses.",
+  "difficulty": "medium",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-002",
+  "seed": 20261118,
+  "started_at": "2026-06-15T10:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Authentication token validation failures",
+  "window_ended_at": "2026-06-15T10:15:00+00:00"
+}

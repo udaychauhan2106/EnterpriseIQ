@@ -23,7 +23,7 @@ npm run dev
 
 Open `http://127.0.0.1:5173`. The local investigation workflow uses SQLite, BM25 over existing `processed_data/` chunks, and uploaded files; it requires no provider credentials. Qdrant dense retrieval is opt-in via `ENTERPRISEIQ_ENABLE_EXTERNAL_RETRIEVAL=true`. Provider-backed features must be configured deliberately and should not receive sensitive content without authorization.
 
-The default mock deployment, incident, logs, and health tools make no external calls and return `not_configured`; reports state that no live operational data was queried. The workflow never performs remediation. A single environment API key can be enabled with `ENTERPRISEIQ_API_KEY`; in production it is mandatory and scoped to `ENTERPRISEIQ_ORGANIZATION_ID`. Development organization headers are not authentication.
+Without a scenario-scoped investigation, mock deployment, incident, logs, and health tools make no external calls and return `not_configured`. Incident Lab investigations use synthetic, read-only fixture outputs; no live operational data is queried and the workflow never performs remediation. A single environment API key can be enabled with `ENTERPRISEIQ_API_KEY`; in production it is mandatory and scoped to `ENTERPRISEIQ_ORGANIZATION_ID`. Development organization headers are not authentication.
 
 ### Investigation API
 
@@ -38,11 +38,21 @@ The default mock deployment, incident, logs, and health tools make no external c
 | `GET` | `/api/v1/investigations/{id}` | Plan, evidence, tool history, and status |
 | `GET` | `/api/v1/investigations/{id}/events/stream` | Server-sent workflow updates |
 | `GET` | `/api/v1/investigations/{id}/report` | Evidence-backed report |
+| `GET` | `/api/v1/lab/scenarios` | Synthetic scenarios with maximum configured event severity |
+| `GET` | `/api/v1/lab/scenarios/{id}/evidence` | Check and list allowlisted synthetic evidence sources |
+| `GET` | `/api/v1/lab/scenarios/{id}/artifacts/{artifact_id}` | Inspect an allowlisted original synthetic artifact |
+| `POST` | `/api/v1/lab/scenarios/{id}/publish` | Idempotently index public scenario evidence |
 | `POST` | `/api/v1/investigations/{id}/approvals` | Request human approval |
 | `GET` | `/api/v1/approvals` | Pending approval queue |
 | `POST` | `/api/v1/approvals/{id}/decision` | Record approval or rejection |
 
 Uploaded files are limited to 10 MiB; DOCX/PPTX archive contents are limited to 50 MiB expanded by default. Supported formats: PDF, DOCX, PPTX, TXT, Markdown, HTML, CSV, JSON, and log files. SQLite is the local default; set `DATABASE_URL` to a `postgresql+psycopg://...` URL to use PostgreSQL. `APP_ENV=production` applies Alembic migrations during startup and requires an API key.
+
+### Synthetic Incident Lab
+
+The dashboard's **Incident Lab** provides ten deterministic fictional Nexora Systems scenarios, live timeline/metric progression, service observations, stop/replay/reset controls, and a one-click launch into the existing investigation workflow. Generate or refresh the dataset with `uv run python -m app.simulator.materialize`. All artifacts are marked synthetic; run history is process-local, and health cards are generated observations rather than live probes. Ground truth is separate from ingestion and ordinary APIs. See [simulator operation](docs/INCIDENT_SIMULATOR.md), [dataset layout](docs/INCIDENT_DATASET.md), [scenario catalog](docs/INCIDENT_SCENARIOS.md), and [evaluation methodology](docs/EVALUATION_METHODOLOGY.md).
+
+The **Demo Center** presents curated payment API, duplicate transaction, and delayed notification scenarios. A one-click run checks and indexes the scenario's public evidence, then launches the existing persisted investigation workflow. Workflow progress is streamed from backend events with persisted-event polling as a fallback. Demo submissions use an optional organization-scoped `Idempotency-Key`; the Demo Center reset only clears its view and permits a new run—it does not delete investigations or evidence. Reports distinguish retrieved facts from unconfirmed hypotheses, cite the source evidence, and do not manufacture confidence scores or root causes. Original synthetic sources are inspectable through the allowlisted artifact API; ground truth is never exposed.
 
 ### Tests and evaluation
 

@@ -1,0 +1,10 @@
+{
+  "actions": [
+    "Refreshed the active signing-key metadata across auth instances.",
+    "Monitored token validation and gateway 401 rates after refresh."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-002",
+  "status": "resolved",
+  "synthetic": true
+}

@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc001-deploy-42",
+      "event_id": "533c0354-5ebc-510e-9f15-eeda93a5aafb",
+      "message": "Synthetic payment-service release 42 completed; worker concurrency changed from 20 to 60.",
+      "scenario_id": "INC-001",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc001-deploy-rollback",
+      "event_id": "d47897c5-b356-5fe9-ae52-4a1845a900b1",
+      "message": "Synthetic worker concurrency rollback recorded; post-change connection utilization is being observed.",
+      "scenario_id": "INC-001",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:10:00Z"
+    }
+  ],
+  "scenario_id": "INC-001",
+  "synthetic": true
+}

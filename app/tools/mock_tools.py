@@ -4,6 +4,13 @@ from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict
 
+from app.simulator.adapter import (
+    deployment_history,
+    incident_history,
+    search_application_logs,
+    service_health,
+    structured_metrics,
+)
 
 class ToolResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -25,9 +32,46 @@ _READ_ONLY_TOOLS = (
 )
 
 
-def run_read_only_tools(query: str) -> list[dict[str, Any]]:
-    """Return explicit non-live tool results; no real service is contacted."""
-    del query
+def run_read_only_tools(
+    query: str, simulation_scenario_id: str | None = None
+) -> list[dict[str, Any]]:
+    """Use a selected synthetic fixture or report that live tools are not configured."""
+    if simulation_scenario_id:
+        tool_outputs = {
+            "search_incident_history": incident_history(
+                simulation_scenario_id, query
+            ),
+            "query_structured_records": structured_metrics(
+                simulation_scenario_id, query
+            ),
+            "get_deployment_history": deployment_history(
+                simulation_scenario_id, query
+            ),
+            "search_application_logs": search_application_logs(
+                simulation_scenario_id, query
+            ),
+            "check_service_health": service_health(simulation_scenario_id),
+        }
+        now = datetime.now(timezone.utc)
+        return [
+            {
+                "id": str(uuid4()),
+                **ToolResult(
+                    tool_name=tool_name,
+                    status="completed",
+                    output=tool_outputs[tool_name],
+                    simulated=True,
+                    started_at=now,
+                    completed_at=now,
+                ).model_dump(mode="json"),
+                "input": {
+                    "query": query,
+                    "simulation_scenario_id": simulation_scenario_id,
+                },
+            }
+            for tool_name in _READ_ONLY_TOOLS
+        ]
+
     results: list[dict[str, Any]] = []
     for tool_name in _READ_ONLY_TOOLS:
         now = datetime.now(timezone.utc)

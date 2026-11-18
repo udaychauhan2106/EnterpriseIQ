@@ -1,0 +1,87 @@
+{
+  "acceptable_hypotheses": [
+    "The duplicate receipt refers to separate transactions and does not explain two ledger commits for one order.",
+    "Client retry timing alone does not provide transaction deduplication."
+  ],
+  "affected_services": [
+    "api-gateway",
+    "payment-service",
+    "postgresql",
+    "message-queue"
+  ],
+  "contributing_factors": [
+    "Delayed responses prompted client retries.",
+    "Queue redelivery also occurred but involved different transaction references."
+  ],
+  "corrective_actions": [
+    "Pause the changed retry path.",
+    "Reconcile ledger records through the approved finance workflow.",
+    "Apply and test stable transaction-level idempotency."
+  ],
+  "expected_findings": [
+    "Two ledger commits share one simulated order reference.",
+    "Retry handling changed before the duplicate transaction alert."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Release 61 changes retry handling",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Same order reference retried",
+      "offset_seconds": 120
+    },
+    {
+      "event": "No idempotency token recorded",
+      "offset_seconds": 180
+    },
+    {
+      "event": "Two ledger rows committed",
+      "offset_seconds": 240
+    },
+    {
+      "event": "Duplicate-transaction alert",
+      "offset_seconds": 300
+    },
+    {
+      "event": "Separate receipt redelivery",
+      "offset_seconds": 390
+    },
+    {
+      "event": "Retry path paused",
+      "offset_seconds": 720
+    }
+  ],
+  "misleading_evidence": [
+    "Duplicate receipt delivery",
+    "Slow database commits",
+    "Client double-submit"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "logs/application.log",
+      "contains": "no idempotency-token field"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "two committed transaction rows"
+    },
+    {
+      "artifact": "logs/application.log",
+      "contains": "client retry reused order reference"
+    },
+    {
+      "artifact": "deployment_history.json",
+      "contains": "retry handling was changed"
+    }
+  ],
+  "resolution_details": "The retry path was paused while transaction reconciliation and a guarded idempotency change were prepared.",
+  "root_cause": "The changed payment retry path lacked idempotency protection, allowing a repeated checkout request to commit a second transaction.",
+  "root_cause_keywords": [
+    "idempotency",
+    "same order",
+    "two committed transaction"
+  ],
+  "scenario_id": "INC-007",
+  "synthetic": true
+}

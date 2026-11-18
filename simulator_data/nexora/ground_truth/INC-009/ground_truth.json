@@ -1,0 +1,87 @@
+{
+  "acceptable_hypotheses": [
+    "Token checks passed.",
+    "Cache-refresh denials explain some unrelated symptoms, not the unintended grant."
+  ],
+  "affected_services": [
+    "api-gateway",
+    "authentication-service",
+    "postgresql"
+  ],
+  "contributing_factors": [
+    "Policy-cache refresh caused unrelated denials.",
+    "Token authentication succeeded and was not itself misconfigured."
+  ],
+  "corrective_actions": [
+    "Withdraw the overbroad policy.",
+    "Review access records.",
+    "Narrow selectors and validate least-privilege tests."
+  ],
+  "expected_findings": [
+    "A valid support-role identity received access to a restricted resource after the policy update.",
+    "Authentication was successful; the issue was authorization scope."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Policy bundle 17 published",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Support-role identity accesses protected route",
+      "offset_seconds": 90
+    },
+    {
+      "event": "Restricted dataset read audited",
+      "offset_seconds": 150
+    },
+    {
+      "event": "Token valid; role claims differ",
+      "offset_seconds": 210
+    },
+    {
+      "event": "Unrelated denials rise during cache refresh",
+      "offset_seconds": 270
+    },
+    {
+      "event": "Evaluator matches broad selector",
+      "offset_seconds": 390
+    },
+    {
+      "event": "Policy bundle withdrawn",
+      "offset_seconds": 600
+    }
+  ],
+  "misleading_evidence": [
+    "Invalid token",
+    "Credential compromise",
+    "Policy cache outage"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "deployment_history.json",
+      "contains": "policy bundle 17"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "restricted support dataset"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "broader resource selector"
+    },
+    {
+      "artifact": "logs/application.log",
+      "contains": "token signature and expiry checks passed"
+    }
+  ],
+  "resolution_details": "Policy bundle 17 was withdrawn and affected synthetic access records were reviewed.",
+  "root_cause": "Policy bundle 17 used an overly broad resource selector that granted a support-role identity unintended access.",
+  "root_cause_keywords": [
+    "policy bundle 17",
+    "resource selector",
+    "support-role",
+    "authorization"
+  ],
+  "scenario_id": "INC-009",
+  "synthetic": true
+}

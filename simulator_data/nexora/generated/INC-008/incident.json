@@ -1,0 +1,17 @@
+{
+  "affected_services": [
+    "api-gateway",
+    "authentication-service",
+    "monitoring-service"
+  ],
+  "description": "Easy synthetic availability incident with direct deployment and probe-path evidence.",
+  "difficulty": "easy",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-008",
+  "seed": 20261118,
+  "started_at": "2026-06-15T12:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Service unavailable after probe change",
+  "window_ended_at": "2026-06-15T12:15:00+00:00"
+}

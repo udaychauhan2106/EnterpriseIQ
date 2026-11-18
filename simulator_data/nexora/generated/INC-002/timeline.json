@@ -1,0 +1,134 @@
+{
+  "events": [
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "b42e831a-e140-545c-ab6f-9c2bb9be4b36",
+      "message": "Synthetic simulation started for INC-002.",
+      "scenario_id": "INC-002",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-rotation-17",
+      "event_id": "e9a3063b-e9a6-52cf-9ccf-2e64b07d332c",
+      "message": "Synthetic auth-service key rotation job started; key identifier key-nx-2025-02 remains in the active-key list.",
+      "scenario_id": "INC-002",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-trace-119",
+      "event_id": "789240d7-34e5-5295-866b-145352f86560",
+      "message": "Synthetic token validation rejected key identifier key-nx-2025-02; signing metadata reports not-after 2026-06-15T10:02:00Z.",
+      "scenario_id": "INC-002",
+      "service_id": "authentication-service",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:03:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-trace-119",
+      "event_id": "aa5662a5-f581-5d1d-9efe-6bef58acaa51",
+      "message": "Synthetic protected API requests returned HTTP 401; public health checks remain successful.",
+      "scenario_id": "INC-002",
+      "service_id": "api-gateway",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:04:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-cache-check",
+      "event_id": "c013fd38-c37f-5faf-877d-060776134922",
+      "message": "Synthetic authentication cache hit rate decreased; Redis latency and availability remain within baseline.",
+      "scenario_id": "INC-002",
+      "service_id": "redis",
+      "severity": "info",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:05:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "494f3555-1573-5049-b572-d57fd891ecbe",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-002",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:06:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-trace-119",
+      "event_id": "f7a08c54-1843-5b95-a9f9-0b392ecf4b91",
+      "message": "Synthetic monitoring recorded a rise in protected-route 401 responses while public readiness checks remained green.",
+      "scenario_id": "INC-002",
+      "service_id": "api-gateway",
+      "severity": "warning",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:06:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-key-refresh",
+      "event_id": "28d83fb4-7564-5ad8-8b05-11497155e9e8",
+      "message": "Synthetic key metadata refresh completed; token validation error counts are being monitored.",
+      "scenario_id": "INC-002",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:09:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "da24285b-cf96-585b-9a01-786303415a2f",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-002",
+      "service_id": "redis",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:12:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "dc27a743-6ae2-5a56-a17e-a603b143eb7d",
+      "message": "Synthetic simulation window ended for INC-002; this does not imply the incident was resolved.",
+      "scenario_id": "INC-002",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-002",
+  "synthetic": true
+}

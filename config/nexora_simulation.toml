@@ -1,0 +1,7 @@
+[simulation]
+event_generation_interval_seconds = 30
+incident_duration_seconds = 900
+service_failure_probability = 0.85
+background_noise_probability = 0.15
+metric_sampling_interval_seconds = 60
+scenario_seed = 20261118

@@ -1,0 +1,18 @@
+{
+  "affected_services": [
+    "api-gateway",
+    "payment-service",
+    "postgresql",
+    "message-queue"
+  ],
+  "description": "Hard synthetic incident with retry, transaction, and request-correlation evidence.",
+  "difficulty": "hard",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-007",
+  "seed": 20261118,
+  "started_at": "2026-06-15T12:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Duplicate payment records on retry",
+  "window_ended_at": "2026-06-15T12:15:00+00:00"
+}

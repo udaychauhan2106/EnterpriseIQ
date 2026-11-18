@@ -1,0 +1,79 @@
+{
+  "acceptable_hypotheses": [
+    "Stable Redis latency contradicts a broad cache outage.",
+    "Public health checks remain successful."
+  ],
+  "affected_services": [
+    "api-gateway",
+    "authentication-service",
+    "redis",
+    "postgresql"
+  ],
+  "contributing_factors": [
+    "Key rotation metadata refresh lagged.",
+    "Gateway health probes do not exercise protected token validation."
+  ],
+  "corrective_actions": [
+    "Refresh active signing-key metadata on all instances.",
+    "Verify key validity and token kid distribution.",
+    "Monitor 401 rates after rotation."
+  ],
+  "expected_findings": [
+    "Protected 401s aligned with key validity metadata.",
+    "Redis measurements do not support cache outage as the primary cause."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Key rotation starts",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Token validation rejects the key identifier",
+      "offset_seconds": 180
+    },
+    {
+      "event": "Protected API requests return 401",
+      "offset_seconds": 240
+    },
+    {
+      "event": "Redis remains within baseline",
+      "offset_seconds": 300
+    },
+    {
+      "event": "Key metadata refresh",
+      "offset_seconds": 540
+    }
+  ],
+  "misleading_evidence": [
+    "Redis cache outage",
+    "Gateway health-check failure",
+    "Invalid client credentials"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "logs/application.log",
+      "contains": "not-after"
+    },
+    {
+      "artifact": "deployment_history.json",
+      "contains": "key rotation"
+    },
+    {
+      "artifact": "metrics.csv",
+      "contains": "token.validation_failures"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "latency and availability remain within baseline"
+    }
+  ],
+  "resolution_details": "Active key metadata was refreshed and token validation errors were monitored.",
+  "root_cause": "Authentication instances continued using an expired signing key after key rotation metadata became stale.",
+  "root_cause_keywords": [
+    "expired signing key",
+    "key identifier",
+    "token validation"
+  ],
+  "scenario_id": "INC-002",
+  "synthetic": true
+}

@@ -1,0 +1,87 @@
+{
+  "acceptable_hypotheses": [
+    "Broker nodes remained healthy.",
+    "The timeout alone does not explain the checkpoint advancing without confirmation."
+  ],
+  "affected_services": [
+    "message-queue",
+    "postgresql",
+    "monitoring-service"
+  ],
+  "contributing_factors": [
+    "Aggregate lag dashboard omitted per-partition acknowledgements.",
+    "A transient database timeout was a contributing retry signal, not the offset-ordering defect."
+  ],
+  "corrective_actions": [
+    "Pause checkpoint advancement.",
+    "Reconcile missing source IDs.",
+    "Replay from a verified sink position and add partition acknowledgement metrics."
+  ],
+  "expected_findings": [
+    "Committed offset advanced before destination confirmation.",
+    "Low aggregate consumer lag did not prove synchronization completed."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Consumer release 33 changes checkpoint batching",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Offset advances with fewer sink confirmations",
+      "offset_seconds": 150
+    },
+    {
+      "event": "Destination misses source event identifiers",
+      "offset_seconds": 240
+    },
+    {
+      "event": "Aggregate lag appears near zero",
+      "offset_seconds": 300
+    },
+    {
+      "event": "Transient sink timeout lacks replay audit",
+      "offset_seconds": 390
+    },
+    {
+      "event": "Checkpoint advances across unconfirmed range",
+      "offset_seconds": 510
+    },
+    {
+      "event": "Checkpoint paused for bounded replay",
+      "offset_seconds": 780
+    }
+  ],
+  "misleading_evidence": [
+    "Broker outage",
+    "Destination table corruption",
+    "Transient database timeout alone"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "deployment_history.json",
+      "contains": "checkpoint batching change"
+    },
+    {
+      "artifact": "logs/application.log",
+      "contains": "sink confirmation count"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "missing several source event identifiers"
+    },
+    {
+      "artifact": "metrics.csv",
+      "contains": "sync.sink_confirmation_gap"
+    }
+  ],
+  "resolution_details": "Checkpoint advancement was paused for reconciliation and bounded replay from the last verified sink position.",
+  "root_cause": "The consumer advanced committed offsets before confirming destination writes, leaving source events unsynchronized.",
+  "root_cause_keywords": [
+    "committed offset",
+    "sink confirmation",
+    "checkpoint",
+    "consumer"
+  ],
+  "scenario_id": "INC-010",
+  "synthetic": true
+}

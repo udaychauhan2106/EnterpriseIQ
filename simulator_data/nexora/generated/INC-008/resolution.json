@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Restored the documented readiness endpoint.",
+    "Verify readiness and liveness probes independently before deployment.",
+    "Monitor ready instance count and gateway 503 rates."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-008",
+  "status": "resolved",
+  "synthetic": true
+}

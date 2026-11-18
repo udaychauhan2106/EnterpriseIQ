@@ -1,0 +1,148 @@
+{
+  "events": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-deploy-45",
+      "event_id": "1387223a-615d-592b-8ca1-b66458809abb",
+      "message": "Synthetic release 45 completed with a checkout history endpoint change.",
+      "scenario_id": "INC-004",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_started"
+      },
+      "correlation_id": null,
+      "event_id": "dea6ad31-3a41-5985-a322-b013956acfa3",
+      "message": "Synthetic simulation started for INC-004.",
+      "scenario_id": "INC-004",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-trace-405",
+      "event_id": "c5b03214-4a7a-5c84-80d1-de19e86df650",
+      "message": "Synthetic checkout history query duration rose above 1.4 seconds for a growing share of requests.",
+      "scenario_id": "INC-004",
+      "service_id": "payment-service",
+      "severity": "warning",
+      "source": "application_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "ecdfe413-9791-5ad4-8178-f0616c656b80",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-004",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:02:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-db-io",
+      "event_id": "84d392fe-88c1-582b-ae96-8f45cb72476a",
+      "message": "Synthetic database read I/O increased; sequential scan counts rose while connection use stayed near baseline.",
+      "scenario_id": "INC-004",
+      "service_id": "postgresql",
+      "severity": "warning",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:03:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-trace-405",
+      "event_id": "d40ab6d5-5e01-52c8-aa85-d1f47dd9dfff",
+      "message": "Synthetic API p95 latency increased; request volume and gateway CPU remain close to baseline.",
+      "scenario_id": "INC-004",
+      "service_id": "api-gateway",
+      "severity": "warning",
+      "source": "monitoring",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:04:30Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-cache-noise",
+      "event_id": "8a0b8cc4-84a9-55f5-97aa-4f5ed22b41bb",
+      "message": "Synthetic cache hit ratio dipped briefly during scheduled key refresh.",
+      "scenario_id": "INC-004",
+      "service_id": "redis",
+      "severity": "info",
+      "source": "infrastructure_log",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:06:30Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "990669af-add6-568d-925e-bca4ab1a0682",
+      "message": "Synthetic cache refresh completed successfully.",
+      "scenario_id": "INC-004",
+      "service_id": "notification-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:07:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-rollback",
+      "event_id": "5fefe970-2b7f-5665-b27d-5f05475478f4",
+      "message": "Synthetic query plan change was rolled back; checkout latency is being compared with the prior release.",
+      "scenario_id": "INC-004",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:11:00Z"
+    },
+    {
+      "attributes": {
+        "background_noise": true
+      },
+      "correlation_id": null,
+      "event_id": "fb83182d-75c2-57cd-b0e0-4665a61779c8",
+      "message": "Synthetic scheduler check found no pending work.",
+      "scenario_id": "INC-004",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:13:00Z"
+    },
+    {
+      "attributes": {
+        "event_type": "simulation_window_ended"
+      },
+      "correlation_id": null,
+      "event_id": "4abbfd61-edf3-554e-afa7-40c59b8e0bf3",
+      "message": "Synthetic simulation window ended for INC-004; this does not imply the incident was resolved.",
+      "scenario_id": "INC-004",
+      "service_id": "monitoring-service",
+      "severity": "info",
+      "source": "platform",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:15:00Z"
+    }
+  ],
+  "scenario_id": "INC-004",
+  "synthetic": true
+}

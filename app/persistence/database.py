@@ -42,6 +42,12 @@ class InvestigationRecord(Base):
     __table_args__ = (
         Index("ix_investigations_org_created", "organization_id", "created_at"),
         Index("ix_investigations_org_status", "organization_id", "status"),
+        Index(
+            "uq_investigations_org_idempotency_key",
+            "organization_id",
+            "idempotency_key",
+            unique=True,
+        ),
     )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
@@ -49,6 +55,9 @@ class InvestigationRecord(Base):
         ForeignKey("organizations.id"), nullable=False
     )
     request: Mapped[str] = mapped_column(Text, nullable=False)
+    simulation_scenario_id: Mapped[str | None] = mapped_column(String(10))
+    idempotency_key: Mapped[str | None] = mapped_column(String(128))
+    request_fingerprint: Mapped[str | None] = mapped_column(String(64))
     status: Mapped[str] = mapped_column(String(40), nullable=False, default="queued")
     plan: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     evidence: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)

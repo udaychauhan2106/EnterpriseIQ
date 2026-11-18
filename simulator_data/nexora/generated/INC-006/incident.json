@@ -1,0 +1,18 @@
+{
+  "affected_services": [
+    "api-gateway",
+    "notification-service",
+    "redis",
+    "monitoring-service"
+  ],
+  "description": "Hard synthetic incident with delayed memory growth, restart noise, and deployment evidence.",
+  "difficulty": "hard",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-006",
+  "seed": 20261118,
+  "started_at": "2026-06-15T12:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Worker memory pressure after release",
+  "window_ended_at": "2026-06-15T12:15:00+00:00"
+}

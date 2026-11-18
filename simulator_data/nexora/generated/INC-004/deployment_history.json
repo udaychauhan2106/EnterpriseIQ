@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-deploy-45",
+      "event_id": "1387223a-615d-592b-8ca1-b66458809abb",
+      "message": "Synthetic release 45 completed with a checkout history endpoint change.",
+      "scenario_id": "INC-004",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc004-rollback",
+      "event_id": "5fefe970-2b7f-5665-b27d-5f05475478f4",
+      "message": "Synthetic query plan change was rolled back; checkout latency is being compared with the prior release.",
+      "scenario_id": "INC-004",
+      "service_id": "payment-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T12:11:00Z"
+    }
+  ],
+  "scenario_id": "INC-004",
+  "synthetic": true
+}

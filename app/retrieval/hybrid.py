@@ -40,7 +40,11 @@ def _tokenize(text: str) -> list[str]:
     return [token.lower() for token in _TOKEN.findall(text)]
 
 
-def _local_chunks(session: Session, organization_id: str) -> list[CorpusChunk]:
+def _local_chunks(
+    session: Session,
+    organization_id: str,
+    simulation_scenario_id: str | None = None,
+) -> list[CorpusChunk]:
     chunks: list[CorpusChunk] = []
     rows = session.scalars(
         select(DocumentChunkRecord).where(
@@ -48,20 +52,31 @@ def _local_chunks(session: Session, organization_id: str) -> list[CorpusChunk]:
         )
     ).all()
     for row in rows:
+        metadata = row.metadata_json or {}
+        if (
+            simulation_scenario_id
+            and metadata.get("scenario_id") != simulation_scenario_id
+        ):
+            continue
         chunks.append(
             CorpusChunk(
-                source_id=str(row.metadata_json.get("source_type", "uploaded")),
+                source_id=str(metadata.get("source_type", "uploaded")),
                 document_id=row.document_id,
                 chunk_id=row.id,
                 text=row.text,
-                metadata={"source": row.metadata_json.get("source", "Uploaded document")},
+                metadata={
+                    "source": metadata.get("source", "Uploaded document"),
+                    "source_type": metadata.get("source_type", "uploaded"),
+                    "scenario_id": metadata.get("scenario_id"),
+                    "synthetic": metadata.get("synthetic", False),
+                },
             )
         )
 
     processed_dir = Path(settings.ENTERPRISEIQ_PROCESSED_DATA_DIR or PROJECT_ROOT / "processed_data")
     if not processed_dir.is_absolute():
         processed_dir = PROJECT_ROOT / processed_dir
-    if processed_dir.exists():
+    if not simulation_scenario_id and processed_dir.exists():
         for path in sorted(processed_dir.glob("*/*.json")):
             if path.name == "failed_files.json":
                 continue
@@ -184,9 +199,10 @@ def hybrid_search(
     *,
     limit: int = 8,
     source_type: str | None = None,
+    simulation_scenario_id: str | None = None,
 ) -> RetrievalResult:
     """Search local and indexed knowledge with BM25 and optional Qdrant fusion."""
-    chunks = _local_chunks(session, organization_id)
+    chunks = _local_chunks(session, organization_id, simulation_scenario_id)
     if source_type:
         chunks = [
             chunk

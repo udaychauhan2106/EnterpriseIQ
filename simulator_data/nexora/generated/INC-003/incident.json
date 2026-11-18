@@ -1,0 +1,18 @@
+{
+  "affected_services": [
+    "notification-service",
+    "message-queue",
+    "redis",
+    "monitoring-service"
+  ],
+  "description": "Synthetic notification delays with queue, consumer, and downstream service evidence, including incomplete historical comparisons.",
+  "difficulty": "hard",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-003",
+  "seed": 20261118,
+  "started_at": "2026-06-15T10:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Delayed notification delivery",
+  "window_ended_at": "2026-06-15T10:15:00+00:00"
+}

@@ -1,0 +1,11 @@
+{
+  "actions": [
+    "Bound retries and align downstream deadlines with the end-to-end request budget.",
+    "Confirm provider status with request IDs.",
+    "Reconcile timed-out attempts before retrying customer-visible transactions."
+  ],
+  "record_type": "synthetic_resolution",
+  "scenario_id": "INC-005",
+  "status": "resolved",
+  "synthetic": true
+}

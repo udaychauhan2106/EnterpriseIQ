@@ -1,0 +1,83 @@
+{
+  "acceptable_hypotheses": [
+    "Redis timeouts appeared after initial delivery delays.",
+    "Broker nodes remained healthy."
+  ],
+  "affected_services": [
+    "notification-service",
+    "message-queue",
+    "redis",
+    "monitoring-service"
+  ],
+  "contributing_factors": [
+    "Default dashboard omitted acknowledgement lag.",
+    "Later Redis timeouts were limited and not the initial symptom."
+  ],
+  "corrective_actions": [
+    "Restore consumer concurrency.",
+    "Track consumer acknowledgement lag.",
+    "Monitor delivery receipts and oldest-message age."
+  ],
+  "expected_findings": [
+    "Delivery age and queue depth rose after the concurrency change.",
+    "Green broker health did not establish healthy consumer throughput."
+  ],
+  "expected_timeline": [
+    {
+      "event": "Consumer concurrency reduced from 8 to 2",
+      "offset_seconds": 0
+    },
+    {
+      "event": "Notification delivery age increases",
+      "offset_seconds": 240
+    },
+    {
+      "event": "Queue depth rises",
+      "offset_seconds": 360
+    },
+    {
+      "event": "Broker health is green but lag is not shown",
+      "offset_seconds": 480
+    },
+    {
+      "event": "Redis timeout noise",
+      "offset_seconds": 660
+    },
+    {
+      "event": "Concurrency restored",
+      "offset_seconds": 780
+    }
+  ],
+  "misleading_evidence": [
+    "Redis timeouts",
+    "Broker node failure",
+    "Traffic spike"
+  ],
+  "relevant_evidence_identifiers": [
+    {
+      "artifact": "deployment_history.json",
+      "contains": "concurrency changed from 8 to 2"
+    },
+    {
+      "artifact": "logs/application.log",
+      "contains": "delivery age exceeded"
+    },
+    {
+      "artifact": "logs/infrastructure.log",
+      "contains": "oldest unacknowledged"
+    },
+    {
+      "artifact": "metrics.csv",
+      "contains": "queue.depth"
+    }
+  ],
+  "resolution_details": "Consumer concurrency was restored and queue age and delivery receipts were monitored.",
+  "root_cause": "Notification consumer concurrency was reduced, causing queue backlog and delayed delivery.",
+  "root_cause_keywords": [
+    "consumer concurrency",
+    "queue depth",
+    "delivery age"
+  ],
+  "scenario_id": "INC-003",
+  "synthetic": true
+}

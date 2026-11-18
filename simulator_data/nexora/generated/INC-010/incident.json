@@ -1,0 +1,17 @@
+{
+  "affected_services": [
+    "message-queue",
+    "postgresql",
+    "monitoring-service"
+  ],
+  "description": "Hard synthetic sync incident with offset, sink, and consumer-lag evidence plus an incomplete dashboard.",
+  "difficulty": "hard",
+  "label": "SYNTHETIC INCIDENT",
+  "scenario_id": "INC-010",
+  "seed": 20261118,
+  "started_at": "2026-06-15T12:00:00+00:00",
+  "status": "resolved",
+  "synthetic": true,
+  "title": "Delayed data synchronization",
+  "window_ended_at": "2026-06-15T12:15:00+00:00"
+}

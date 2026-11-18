@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-rotation-17",
+      "event_id": "e9a3063b-e9a6-52cf-9ccf-2e64b07d332c",
+      "message": "Synthetic auth-service key rotation job started; key identifier key-nx-2025-02 remains in the active-key list.",
+      "scenario_id": "INC-002",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:00:00Z"
+    },
+    {
+      "attributes": {},
+      "correlation_id": "nexora-inc002-key-refresh",
+      "event_id": "28d83fb4-7564-5ad8-8b05-11497155e9e8",
+      "message": "Synthetic key metadata refresh completed; token validation error counts are being monitored.",
+      "scenario_id": "INC-002",
+      "service_id": "authentication-service",
+      "severity": "info",
+      "source": "deployment",
+      "synthetic": true,
+      "timestamp": "2026-06-15T10:09:00Z"
+    }
+  ],
+  "scenario_id": "INC-002",
+  "synthetic": true
+}
